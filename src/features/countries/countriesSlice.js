@@ -1,10 +1,9 @@
 import { api } from "../api/api";
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 
-
 export const countriesAdapter = createEntityAdapter({
-    selectId: country => country.name.official,
-    sortComparer: (a, b) => a.name.official.localeCompare(b.name.official),
+    selectId: country => country.name.common,
+    sortComparer: (a, b) => a.name.common.localeCompare(b.name.common),
 });
 
 const initialState = countriesAdapter.getInitialState();
@@ -35,5 +34,6 @@ const selectCountriesData = createSelector(
 export const {
     selectAll: selectAllCountries,
     selectById: selectCountryById,
-    selectIds: selectCountriesIds,
+    selectIds: selectCountryIds,
+    selectTotal: selectCountriesTotal,
 } = countriesAdapter.getSelectors(state => selectCountriesData(state) ?? initialState);

@@ -1,30 +1,34 @@
-import { selectCountriesIds, useGetCountriesQuery } from "./countriesSlice.js";
+import { selectCountryIds, useGetCountriesQuery } from "./countriesSlice.js";
 import { useSelector } from "react-redux";
 import CountriesListItem from "./CountriesListItem.jsx";
 
-const CountriesList = () => {
+const CountriesList = ({currentPage, itemsPerPage}) => {
     const {isSuccess, isLoading, isError, error} = useGetCountriesQuery()
 
-    const countriesIds = useSelector(selectCountriesIds);
+    const countryIds = useSelector(selectCountryIds);
 
-    let content;
+    const currentCountryIds = currentPage && itemsPerPage ? countryIds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : countryIds;
+
+
     if (isLoading) {
-        content = <div>Loading...</div>;
+        return (
+            <div>Loading...</div>
+        )
     } else if (isSuccess) {
-        content = <div className="grid grid-cols-list gap-14">
-            {countriesIds.map(countryId => (
-                <CountriesListItem key={countryId} countryId={countryId}/>
-            ))}
-        </div>
+        return (
+            <div className="grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-14 mt-20">
+                {currentCountryIds.map(countryId => (
+                    <CountriesListItem key={countryId} countryId={countryId}/>
+                ))}
+            </div>
+        )
     } else if (isError) {
-        content = <div>{error}</div>;
+        return (
+            <div>{error}</div>
+        )
     }
 
-    return (
-        <div className="mt-20">
-            {content}
-        </div>
-    )
+    return null
 }
 
 export default CountriesList
