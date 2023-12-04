@@ -16,11 +16,11 @@ const CountriesList = ({currentPage, itemsPerPage}) => {
         )
     } else if (isSuccess) {
         return (
-            <div className="grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-14 mt-20">
+            <ul className="grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10 lg:gap-14 mt-20">
                 {currentCountryIds.map(countryId => (
                     <CountriesListItem key={countryId} countryId={countryId}/>
                 ))}
-            </div>
+            </ul>
         )
     } else if (isError) {
         return (
