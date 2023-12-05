@@ -22,7 +22,7 @@ let CountriesListItem = ({ countryId }) => {
     }, [flags.svg, flags.png]);
 
     return (
-        <li className="bg-white dark:bg-shark-900 shadow w-full max-w-[16.5rem] sm:max-w-none mx-auto rounded-lg overflow-hidden transition-transform hover:-translate-y-3 focus-within:-translate-y-3 focus-within:outline outline-2 outline-zinc-900 dark:outline-white ">
+        <li className="bg-white dark:bg-shark-900 shadow w-full max-w-[16.5rem] sm:max-w-none mx-auto rounded-lg overflow-hidden transition-transform hover:-translate-y-3 focus-within:-translate-y-3 focus-within:outline outline-2 outline-zinc-900 dark:outline-white">
             <a href="#" className="outline-none">
                 <img className="aspect-video bg-white object-cover w-full" src={imageSrc}
                      alt={flags.alt} aria-hidden={flags.alt ? undefined : true}/>

@@ -54,7 +54,7 @@ const CountriesPage = () => {
             <CountriesList currentPage={pageNum} itemsPerPage={itemsPerPage} />
             <div
                 aria-hidden={true}
-                className="mt-10 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-900"
+                className="mt-10 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
             />
             <div className="flex items-center justify-between gap-3 flex-col lg:flex-row mt-3">
                 <p className="text-sm">
@@ -64,22 +64,20 @@ const CountriesPage = () => {
                 </p>
                 <div className="flex gap-3">
                     <Button
+                        bold
                         size="sm"
-                        variant="contained"
-                        color="primary"
                         onClick={handlePrevClick}
                         disabled={isPrevDisabled}
-                        startIcon={<GoArrowLeft className="text-base" />}
+                        // startIcon={<GoArrowLeft className="text-base" />}
                     >
-                        Prev
+                        Previous
                     </Button>
                     <Button
+                        bold
                         size="sm"
-                        variant="contained"
-                        color="primary"
                         onClick={handleNextClick}
                         disabled={isNextDisabled}
-                        endIcon={<GoArrowRight className="text-base" />}
+                        // endIcon={<GoArrowRight className="text-base" />}
                     >
                         Next
                     </Button>
