@@ -10,11 +10,16 @@ import {
     BELOW_XS,
 } from "../../app/config.js";
 import { useSelector } from "react-redux";
-import { selectCountriesTotal } from "./countriesSlice.js";
+import {
+    selectCountriesTotal,
+    selectCountryIds,
+    useGetCountriesQuery,
+} from "./countriesSlice.js";
 import Button from "../../components/Button.jsx";
 import { MdArrowForward, MdOutlineArrowForward } from "react-icons/md";
 import React from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
+import Pagination from "../../components/Pagination.jsx";
 
 const CountriesPage = () => {
     const isAboveLg = useMediaQuery(ABOVE_LG);
@@ -23,7 +28,8 @@ const CountriesPage = () => {
     const isBelowXs = useMediaQuery(BELOW_XS);
 
     const { pageNum } = useParams();
-    const navigate = useNavigate();
+    const { isSuccess, isLoading, isError, error } = useGetCountriesQuery();
+    const countryIds = useSelector(selectCountryIds);
     const countriesTotal = useSelector(selectCountriesTotal);
 
     let itemsPerPage = 0;
@@ -37,54 +43,33 @@ const CountriesPage = () => {
         itemsPerPage = 8;
     }
 
-    const handlePrevClick = () => {
-        navigate(`/${+pageNum - 1}`);
-    };
+    let content;
+    if (isLoading) {
+        content = <div>Loading...</div>;
+    } else if (isSuccess) {
+        content = (
+            <>
+                <CountriesList
+                    list={countryIds}
+                    currentPage={pageNum}
+                    itemsPerPage={itemsPerPage}
+                />
+                <div
+                    aria-hidden={true}
+                    className="mt-10 mb-3 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
+                />
+                <Pagination
+                    currentPage={pageNum}
+                    itemsPerPage={itemsPerPage}
+                    itemsTotal={countriesTotal}
+                />
+            </>
+        );
+    } else if (isError) {
+        content = <div>{error}</div>;
+    }
 
-    const handleNextClick = () => {
-        navigate(`/${+pageNum + 1}`);
-    };
-
-    const isPrevDisabled = +pageNum === 1;
-    const isNextDisabled =
-        +pageNum === Math.ceil(countriesTotal / itemsPerPage);
-
-    return (
-        <div className="wrapper">
-            <CountriesList currentPage={pageNum} itemsPerPage={itemsPerPage} />
-            <div
-                aria-hidden={true}
-                className="mt-10 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
-            />
-            <div className="flex items-center justify-between gap-3 flex-col lg:flex-row mt-3">
-                <p className="text-sm">
-                    Showing {(pageNum - 1) * itemsPerPage + 1} to{" "}
-                    {Math.min(pageNum * itemsPerPage, countriesTotal)} of{" "}
-                    {countriesTotal} results
-                </p>
-                <div className="flex gap-3">
-                    <Button
-                        bold
-                        size="sm"
-                        onClick={handlePrevClick}
-                        disabled={isPrevDisabled}
-                        // startIcon={<GoArrowLeft className="text-base" />}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        bold
-                        size="sm"
-                        onClick={handleNextClick}
-                        disabled={isNextDisabled}
-                        // endIcon={<GoArrowRight className="text-base" />}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
+    return <div className="wrapper mt-20">{content}</div>;
 };
 
 export default CountriesPage;
