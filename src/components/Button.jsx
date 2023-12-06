@@ -29,7 +29,8 @@ const Button = ({
                 variant === "text",
             "text-zinc-900 hover:bg-zinc-100 hover:border-zinc-100 dark:text-white dark:hover:bg-shark-800 dark:hover:border-shark-800":
                 variant === "text" && color === "secondary",
-        }
+        },
+        className
     );
 
     const iconClasses = classnames("flex-shrink-0");
