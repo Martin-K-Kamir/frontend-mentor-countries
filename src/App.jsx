@@ -1,6 +1,7 @@
-import CountriesPage from "./features/countries/CountriesPage.jsx";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
+import CountriesPage from "./features/countries/CountriesPage.jsx";
+import CountryPage from "./features/countries/CountryPage.jsx";
 
 function App() {
 
@@ -8,7 +9,8 @@ function App() {
         <Routes>
             <Route element={<Layout/>}>
                 <Route path="/" element={<Navigate to="/1" replace/>}/>
-                <Route path="/:pageNum" index element={<CountriesPage/>}/>
+                <Route path="/:pageIndex" index element={<CountriesPage/>}/>
+                <Route path="/:pageIndex/:countryId" element={<CountryPage/>}/>
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace/>}/>

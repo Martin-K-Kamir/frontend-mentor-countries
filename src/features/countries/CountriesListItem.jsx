@@ -2,16 +2,15 @@ import { useSelector } from "react-redux";
 import { selectCountryById } from "./countriesSlice.js";
 import React, { useEffect, useState } from "react";
 import imagePlaceholder from "../../assets/images/image-placeholder.webp";
+import Skeleton from "../../components/Skeleton.jsx";
+import {Link} from "react-router-dom";
 
-let CountriesListItem = ({ countryId }) => {
-    const {population, capital, flags, name, region} = useSelector(state => selectCountryById(state, countryId));
-
-    const [imageSrc, setImageSrc] = useState(flags.svg);
-
-    const formattedPopulation = new Intl.NumberFormat().format(population);
-    const formattedCapital = capital.length > 0 ? capital.join(", ") : 'No capital'
+let CountriesListItem = ({countryId, loading}) => {
+    const {population, capital, flags, name, region} = useSelector(state => selectCountryById(state, countryId)) || {};
+    const [imageSrc, setImageSrc] = useState(flags?.svg);
 
     useEffect(() => {
+        if (loading) return;
         const img = new Image();
         img.src = flags.svg;
         img.onerror = () => {
@@ -19,28 +18,41 @@ let CountriesListItem = ({ countryId }) => {
             img.onerror = () => setImageSrc(imagePlaceholder);
         };
         img.onload = () => setImageSrc(img.src);
-    }, [flags.svg, flags.png]);
+    }, [loading, flags?.svg, flags?.png]);
 
     return (
-        <li className="bg-white dark:bg-shark-900 shadow w-full max-w-[16.5rem] sm:max-w-none mx-auto rounded-lg overflow-hidden transition-transform hover:-translate-y-3 focus-within:-translate-y-3 focus-within:outline outline-2 outline-zinc-900 dark:outline-white">
-            <a href="#" className="outline-none">
-                <img className="aspect-video bg-white object-cover w-full" src={imageSrc}
-                     alt={flags.alt} aria-hidden={flags.alt ? undefined : true}/>
-                <div className="p-6 pt-3">
-                    <h2 className="text-lg font-bold">{name.common}</h2>
-                    <ul className="mt-3 text-sm">
+        <li className="bg-white dark:bg-shark-900 shadow w-full max-w-[16.5rem] sm:max-w-none mx-auto rounded-lg overflow-hidden transition-transform hover:-translate-y-3 [&:has(:focus-visible)]:-translate-y-3 [&:has(:focus-visible)]:outline outline-2 outline-zinc-900 dark:outline-white">
+            <Link to={name?.common} className="outline-none">
+                <Skeleton loading={loading} className="aspect-video w-full">
+                    <img className="aspect-video bg-white object-cover w-full" src={imageSrc}
+                         alt={flags?.alt} aria-hidden={flags?.alt ? undefined : true}/>
+                </Skeleton>
+
+                <div className="p-6 pt-4">
+                    <h2 className="text-lg font-bold">
+                        <Skeleton loading={loading} className="h-[1.5rem] w-1/2">
+                            {name?.common}
+                        </Skeleton>
+                    </h2>
+                    <ul className="mt-4 text-sm">
                         <li>
-                            <span className="font-semibold">Population:</span> {formattedPopulation}
+                            <Skeleton loading={loading} className="h-[1.125rem] w-5/6">
+                                <span className="font-semibold">Population:</span> {population ? new Intl.NumberFormat().format(population) : 'No data'}
+                            </Skeleton>
                         </li>
                         <li className="mt-1">
-                            <span className="font-semibold">Region:</span> {region}
+                            <Skeleton loading={loading} className="h-[18px] w-5/6">
+                                <span className="font-semibold">Region:</span> {region}
+                            </Skeleton>
                         </li>
                         <li className="mt-1">
-                            <span className="font-semibold">Capital:</span> {formattedCapital}
+                            <Skeleton loading={loading} className="h-[18px] w-5/6">
+                                <span className="font-semibold">Capital:</span> {capital?.length > 0 ? capital?.join(", ") : 'No capital'}
+                            </Skeleton>
                         </li>
                     </ul>
                 </div>
-            </a>
+            </Link>
         </li>
     )
 }

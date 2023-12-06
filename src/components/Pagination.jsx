@@ -1,9 +1,13 @@
 import Button from "./Button.jsx";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
+const Pagination = ({currentPage, itemsTotal, itemsPerPage}) => {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [currentPage]);
     const handlePrevClick = () => {
         navigate(`/${+currentPage - 1}`);
     };

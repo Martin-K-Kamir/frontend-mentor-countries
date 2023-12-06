@@ -17,11 +17,18 @@ const extendedApi = api.injectEndpoints({
                 return countriesAdapter.setAll(initialState, response);
             },
         }),
+        getCountry: builder.query({
+            query: id => `/name/${id}?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders`,
+            transformResponse: response => {
+                return response[0];
+            },
+        }),
     }),
 });
 
 export const {
     useGetCountriesQuery,
+    useGetCountryQuery,
 } = extendedApi;
 
 export const selectCountriesResult = extendedApi.endpoints.getCountries.select();
