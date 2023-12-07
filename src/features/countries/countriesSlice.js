@@ -11,15 +11,39 @@ const initialState = countriesAdapter.getInitialState();
 const extendedApi = api.injectEndpoints({
     endpoints: builder => ({
         getCountries: builder.query({
-            // query: () => '/all',
             query: () => "/all?fields=name,flags,population,capital,region",
             transformResponse: response => {
-                return countriesAdapter.setAll(initialState, response);
+
+                const data = response.map(country => ({
+                    name: country.name,
+                    flags: country.flags,
+                    info: [
+                        {
+                            label: "Population",
+                            value: country.population
+                                ? new Intl.NumberFormat().format(
+                                      country.population
+                                  )
+                                : "N/A",
+                        },
+                        {
+                            label: "Region",
+                            value: country.region || "N/A",
+                        },
+                        {
+                            label: "Capital",
+                            value: country.capital?.join(", ") || "N/A",
+                        },
+                    ]
+                }));
+
+
+                return countriesAdapter.setAll(initialState, data);
             },
         }),
         getCountry: builder.query({
             query: id =>
-                `/name/${id}?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders`,
+                `/name/${id}?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders&fullText=true`,
             transformResponse: response => {
                 const [data] = response;
 

@@ -18,7 +18,7 @@ const CountriesPage = () => {
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
 
-    const {pageIndex} = useParams();
+    const {pageId} = useParams();
     const {isSuccess, isLoading, isError, error} = useGetCountriesQuery();
     const countryIds = useSelector(selectCountryIds);
     const countriesTotal = useSelector(selectCountriesTotal);
@@ -28,12 +28,11 @@ const CountriesPage = () => {
         itemsPerPage = 9;
     }
 
-
     return <div className="wrapper mt-20">
         <CountriesList
             data={countryIds}
             loading={isLoading}
-            currentPage={pageIndex}
+            currentPage={pageId}
             itemsPerPage={itemsPerPage}
         />
 
@@ -54,7 +53,7 @@ const CountriesPage = () => {
                     className="mt-10 mb-3 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
                 />
                 <Pagination
-                    currentPage={pageIndex}
+                    currentPage={pageId}
                     itemsPerPage={itemsPerPage}
                     itemsTotal={countriesTotal}
                 />

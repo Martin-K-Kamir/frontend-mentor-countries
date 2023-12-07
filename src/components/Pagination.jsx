@@ -9,11 +9,11 @@ const Pagination = ({currentPage, itemsTotal, itemsPerPage}) => {
         window.scrollTo(0, 0);
     }, [currentPage]);
     const handlePrevClick = () => {
-        navigate(`/${+currentPage - 1}`);
+        navigate(`/page/${+currentPage - 1}`);
     };
 
     const handleNextClick = () => {
-        navigate(`/${+currentPage + 1}`);
+        navigate(`/page/${+currentPage + 1}`);
     };
 
     const isPrevDisabled = +currentPage === 1;

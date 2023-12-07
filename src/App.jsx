@@ -8,9 +8,9 @@ function App() {
     return (
         <Routes>
             <Route element={<Layout/>}>
-                <Route path="/" element={<Navigate to="/1" replace/>}/>
-                <Route path="/:pageIndex" index element={<CountriesPage/>}/>
-                <Route path="/:pageIndex/:countryId" element={<CountryPage/>}/>
+                <Route path="/" element={<Navigate to="/page/1" replace/>}/>
+                <Route path="/page/:pageId" index element={<CountriesPage/>}/>
+                <Route path="/country/:countryId" element={<CountryPage/>}/>
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace/>}/>
