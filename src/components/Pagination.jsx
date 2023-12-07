@@ -1,8 +1,9 @@
 import Button from "./Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
-const Pagination = ({currentPage, itemsTotal, itemsPerPage}) => {
+const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,7 +34,12 @@ const Pagination = ({currentPage, itemsTotal, itemsPerPage}) => {
                     size="sm"
                     onClick={handlePrevClick}
                     disabled={isPrevDisabled}
-                    // startIcon={<GoArrowLeft className="text-base" />}
+                    startIcon={
+                        <GoArrowLeft
+                            className="translate-y-[1px]"
+                            strokeWidth="1px"
+                        />
+                    }
                 >
                     Previous
                 </Button>
@@ -42,7 +48,12 @@ const Pagination = ({currentPage, itemsTotal, itemsPerPage}) => {
                     size="sm"
                     onClick={handleNextClick}
                     disabled={isNextDisabled}
-                    // endIcon={<GoArrowRight className="text-base" />}
+                    endIcon={
+                        <GoArrowRight
+                            className="translate-y-[1px]"
+                            strokeWidth="1px"
+                        />
+                    }
                 >
                     Next
                 </Button>

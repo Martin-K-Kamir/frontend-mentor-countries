@@ -2,7 +2,6 @@ export const toTitleCase = string => {
     if (!string) return "";
     let result = string.replace(/([A-Z])/g, " $1");
 
-
     result = result.charAt(0).toUpperCase() + result.slice(1);
 
     return result;
@@ -17,4 +16,7 @@ export const toCamelCase = string => {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         })
         .join("");
-}
+};
+
+export const wait = async ms =>
+    await new Promise(resolve => setTimeout(resolve, ms));
