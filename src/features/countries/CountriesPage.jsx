@@ -5,31 +5,42 @@ import {
     ABOVE_SM,
     BELOW_LG,
 } from "../../app/config.js";
-import { useSelector } from "react-redux";
 import {
-    selectCountriesTotal,
-    selectCountryIds,
-    useGetCountriesQuery,
+    useGetCountriesQuery, useSearchCountryQuery,
 } from "./countriesSlice.js";
 import Pagination from "../../components/Pagination.jsx";
 import { GoAlert } from "react-icons/go";
 import SearchCountry from "./SearchCountry.jsx";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useEffect, useState } from "react"
 
 const CountriesPage = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
     const {pageId} = useParams();
+
     const {data, isSuccess, isLoading, isError, error} = useGetCountriesQuery();
-    const countryIds = useSelector(selectCountryIds);
-    const countriesTotal = useSelector(selectCountriesTotal);
+    const {data: ids, isFetching: isFetchingIds, isError: isErrorIds} = useSearchCountryQuery(debouncedSearchTerm, {skip: !debouncedSearchTerm});
+
+    const countryIds = debouncedSearchTerm ? ids ?? data?.ids : data?.ids;
+
+    useEffect(() => {
+        if (isErrorIds) {
+            console.log("error");
+        }
+    }, [isErrorIds]);
+
     const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
 
-    console.log({data})
-
-    console.log({countryIds})
+    const handleSearch = e => {
+        setSearchTerm(e.target.value);
+    }
 
     return <div className="wrapper mt-20">
-        <SearchCountry/>
+        <SearchCountry searchTerm={searchTerm} onSearch={handleSearch} loading={isFetchingIds} />
 
         <CountriesList
             data={countryIds}
@@ -57,7 +68,7 @@ const CountriesPage = () => {
                 <Pagination
                     currentPage={pageId}
                     itemsPerPage={itemsPerPage}
-                    itemsTotal={countriesTotal}
+                    itemsTotal={countryIds?.length}
                 />
             </>
         )}
