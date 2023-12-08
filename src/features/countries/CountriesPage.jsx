@@ -13,22 +13,24 @@ import {
 } from "./countriesSlice.js";
 import Pagination from "../../components/Pagination.jsx";
 import { GoAlert } from "react-icons/go";
+import SearchCountry from "./SearchCountry.jsx";
 
 const CountriesPage = () => {
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
-
     const {pageId} = useParams();
-    const {isSuccess, isLoading, isError, error} = useGetCountriesQuery();
+    const {data, isSuccess, isLoading, isError, error} = useGetCountriesQuery();
     const countryIds = useSelector(selectCountryIds);
     const countriesTotal = useSelector(selectCountriesTotal);
+    const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
 
-    let itemsPerPage = 8;
-    if (isBelowLg && isAboveSm) {
-        itemsPerPage = 9;
-    }
+    console.log({data})
+
+    console.log({countryIds})
 
     return <div className="wrapper mt-20">
+        <SearchCountry/>
+
         <CountriesList
             data={countryIds}
             loading={isLoading}

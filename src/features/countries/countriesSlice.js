@@ -105,6 +105,52 @@ const extendedApi = api.injectEndpoints({
                 return response.map(({ name }) => name.common);
             },
         }),
+        searchCountry: builder.query({
+            query: name => `/name/${name}?fields=name,flags,population,capital,region`,
+            transformResponse(baseQueryReturnValue, meta, arg) {
+                console.log("lol")
+                return baseQueryReturnValue;
+            },
+            async onQueryStarted(arg, { dispatch, queryFulfilled}) {
+                try {
+                    const response = await queryFulfilled;
+
+                    const data = response.data.map(country => ({
+                        name: country.name,
+                        flags: country.flags,
+                        info: [
+                            {
+                                label: "Population",
+                                value: country.population
+                                    ? new Intl.NumberFormat().format(
+                                        country.population
+                                    )
+                                    : "N/A",
+                            },
+                            {
+                                label: "Region",
+                                value: country.region || "N/A",
+                            },
+                            {
+                                label: "Capital",
+                                value: country.capital?.join(", ") || "N/A",
+                            },
+                        ]
+                    }));
+
+                    const patchResult = dispatch(
+                        api.util.updateQueryData(
+                            "getCountries",
+                            undefined,
+                            draft => {
+                                countriesAdapter.setAll(draft, data);
+                            }
+                        )
+                    );
+
+                } catch {}
+            }
+        })
     }),
 });
 
@@ -112,6 +158,7 @@ export const {
     useGetCountriesQuery,
     useGetCountryQuery,
     useGetBorderCountriesQuery,
+    useSearchCountryQuery,
 } = extendedApi;
 
 export const selectCountriesResult =
@@ -120,6 +167,13 @@ export const selectCountriesResult =
 const selectCountriesData = createSelector(
     selectCountriesResult,
     countriesResult => countriesResult.data
+);
+
+const selectCountriesByRegion = createSelector(
+    selectCountriesData,
+    (_, region) => region,
+    (countries, region) =>
+        countries?.filter(country => country.region === region)
 );
 
 export const {

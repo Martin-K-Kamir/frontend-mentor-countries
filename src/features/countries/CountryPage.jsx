@@ -1,12 +1,12 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
     useGetBorderCountriesQuery,
     useGetCountryQuery,
 } from "./countriesSlice.js";
 import Button from "../../components/Button.jsx";
-import { toCamelCase, toTitleCase, wait } from "../../helpers.js";
+import { toCamelCase, toTitleCase } from "../../helpers.js";
 import CountryFlag from "./CountryFlag.jsx";
-import { GoArrowLeft } from "react-icons/go";
+import { GoAlert, GoArrowLeft } from "react-icons/go";
 import Spinner from "../../components/Spinner.jsx";
 
 const CountryPage = () => {
@@ -91,8 +91,11 @@ const CountryPage = () => {
         );
     } else if (isError) {
         content = (
-            <div>
-                {error.status} {error.statusText}
+            <div className="text-lg font-semibold text-red-600 dark:text-red-100 flex flex-col items-center mt-20 lg:mt-32">
+                <GoAlert className="text-xl" strokeWidth="1px"/>
+                <p>
+                    An error has occurred: {error.status} {error.statusText}
+                </p>
             </div>
         );
     }
