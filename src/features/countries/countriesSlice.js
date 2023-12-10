@@ -13,7 +13,6 @@ const extendedApi = api.injectEndpoints({
         getCountries: builder.query({
             query: () => "/all?fields=name,flags,population,capital,region",
             transformResponse: response => {
-
                 const data = response.map(country => ({
                     name: country.name,
                     flags: country.flags,
@@ -34,9 +33,8 @@ const extendedApi = api.injectEndpoints({
                             label: "Capital",
                             value: country.capital?.join(", ") || "N/A",
                         },
-                    ]
+                    ],
                 }));
-
 
                 return countriesAdapter.setAll(initialState, data);
             },
@@ -110,7 +108,7 @@ const extendedApi = api.injectEndpoints({
             transformResponse: response => {
                 return response.map(({ name }) => name.common);
             },
-        })
+        }),
     }),
 });
 
@@ -119,9 +117,8 @@ export const {
     useGetCountryQuery,
     useGetBorderCountriesQuery,
     useSearchCountryQuery,
+    useLazySearchCountryQuery,
 } = extendedApi;
-
-export const useSearchCountryQueryState = api.endpoints.searchCountry.useQueryState;
 
 export const selectCountriesResult =
     extendedApi.endpoints.getCountries.select();

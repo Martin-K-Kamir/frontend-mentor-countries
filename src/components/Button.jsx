@@ -12,13 +12,16 @@ const Button = ({
     className,
     startIcon,
     endIcon,
+    isIconButton,
     ...rest
 }) => {
     const Component = to ? Link : href ? "a" : "button";
 
     const classes = classnames(
-        "inline-flex items-center justify-center leading-none rounded-lg gap-1.5 pt-2 pb-2.5 px-4 focus-visible:outline-1 disabled:opacity-50 disabled:cursor-not-allowed select-none whitespace-nowrap",
+        "inline-flex items-center justify-center leading-none gap-1.5  focus-visible:outline-1 disabled:opacity-50 disabled:cursor-not-allowed select-none whitespace-nowrap",
         {
+            "rounded-lg pt-2 pb-2.5 px-4": !isIconButton,
+            "rounded-full p-1": isIconButton,
             "font-medium": bold,
             "text-sm": size === "sm",
             "text-base": size === "md",
@@ -28,7 +31,15 @@ const Button = ({
             "[&:not(:hover)]:bg-transparent border [&:not(:hover)]:border-transparent":
                 variant === "text",
             "text-zinc-900 hover:bg-zinc-100 hover:border-zinc-100 dark:text-white dark:hover:bg-shark-800 dark:hover:border-shark-800":
-                variant === "text" && color === "secondary",
+                variant === "text" && color === "primary",
+            "text-blue-900 hover:bg-blue-900/10 border-none":
+                variant === "text" && color === "info" && isIconButton,
+            "text-red-900 hover:bg-red-900/10 border-none":
+                variant === "text" && color === "danger" && isIconButton,
+            "text-yellow-900 hover:bg-red-900/10 border-none":
+                variant === "text" && color === "warning" && isIconButton,
+            "text-green-900 hover:bg-green-900/10 border-none":
+                variant === "text" && color === "success" && isIconButton,
         },
         className
     );

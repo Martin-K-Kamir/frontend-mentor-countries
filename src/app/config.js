@@ -15,3 +15,6 @@ export const BELOW_LG = "(max-width : 63.999em)";
 export const BELOW_XL = "(max-width : 79.999em)";
 
 export const BELOW_2XL = "(max-width : 95.999em)";
+
+export const ALERT_TIMEOUT_DEFAULT = 3_000;
+export const ALERT_TIMEOUT_LONG = 5_000;

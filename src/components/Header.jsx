@@ -48,7 +48,6 @@ const Header = () => {
                     bold
                     size={isAboveSm ? "md" : "sm"}
                     variant="text"
-                    color="secondary"
                     startIcon={
                         mode === "light" ? (
                             <GoMoon

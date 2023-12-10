@@ -63,7 +63,7 @@ const CountryPage = () => {
         ));
 
         content = (
-            <div className="flex flex-col lg:flex-row mt-10 lg:mt-16 gap-7 lg:gap-12 lg:justify-between">
+            <div className="flex flex-col lg:flex-row mt-10 lg:mt-20 gap-7 lg:gap-12 lg:justify-between">
                 <div className="max-w-lg w-full">
                     <CountryFlag
                         className="rounded-lg max-h-96 w-full shadow-lg"
@@ -92,7 +92,7 @@ const CountryPage = () => {
     } else if (isError) {
         content = (
             <div className="text-lg font-semibold text-red-600 dark:text-red-100 flex flex-col items-center mt-20 lg:mt-32">
-                <GoAlert className="text-xl" strokeWidth="1px"/>
+                <GoAlert className="text-xl" strokeWidth="1px" />
                 <p>
                     An error has occurred: {error.status} {error.statusText}
                 </p>
@@ -102,7 +102,7 @@ const CountryPage = () => {
 
     return (
         <div className="max-w-lg mx-auto px-8 pb-20 lg:max-w-none lg:mx-auto lg:px-0 lg:wrapper">
-            <div className="mt-10 lg:mt-16">
+            <div className="mt-10 lg:mt-20">
                 <Button
                     bold
                     to={`/page/${from}`}

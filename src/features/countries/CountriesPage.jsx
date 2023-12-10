@@ -1,80 +1,126 @@
 import CountriesList from "./CountriesList.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMediaQuery } from "@uidotdev/usehooks";
+import { ABOVE_SM, BELOW_LG } from "../../app/config.js";
 import {
-    ABOVE_SM,
-    BELOW_LG,
-} from "../../app/config.js";
-import {
-    useGetCountriesQuery, useSearchCountryQuery,
+    useGetCountriesQuery,
+    useSearchCountryQuery,
 } from "./countriesSlice.js";
 import Pagination from "../../components/Pagination.jsx";
 import { GoAlert } from "react-icons/go";
 import SearchCountry from "./SearchCountry.jsx";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 const CountriesPage = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
+    const navigate = useNavigate();
+    const { pageId } = useParams();
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
-    const {pageId} = useParams();
+    const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
+    const [countryIds, setCountryIds] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const lessDebouncedSearchTerm = useDebounce(searchTerm, 300);
+    const debouncedSearchTerm = useDebounce(searchTerm, 1_000);
 
-    const {data, isSuccess, isLoading, isError, error} = useGetCountriesQuery();
-    const {data: ids, isFetching: isFetchingIds, isError: isErrorIds} = useSearchCountryQuery(debouncedSearchTerm, {skip: !debouncedSearchTerm});
-
-    const countryIds = debouncedSearchTerm ? ids ?? data?.ids : data?.ids;
+    const {
+        data: countriesData,
+        isSuccess: isCountriesQuerySuccess,
+        isLoading: isCountriesQueryLoading,
+        isError: isCountriesQueryError,
+        error: countriesQueryError,
+    } = useGetCountriesQuery();
+    const {
+        currentData: searchResults,
+        isFetching: isSearchingCountries,
+        isSuccess: isSearchSuccess,
+        isError: isSearchError,
+        error: searchError,
+    } = useSearchCountryQuery(debouncedSearchTerm, {
+        skip: !debouncedSearchTerm,
+    });
 
     useEffect(() => {
-        if (isErrorIds) {
-            console.log("error");
+        if (!lessDebouncedSearchTerm) {
+            setCountryIds(countriesData?.ids || []);
+            return;
         }
-    }, [isErrorIds]);
 
-    const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
+        if (isCountriesQuerySuccess && !debouncedSearchTerm) {
+            setCountryIds(countriesData?.ids);
+        }
+
+        if (isSearchSuccess && !isSearchingCountries) {
+            setCountryIds(searchResults);
+            navigate("/page/1");
+        }
+    }, [
+        isCountriesQuerySuccess,
+        isSearchSuccess,
+        isSearchingCountries,
+        debouncedSearchTerm,
+        lessDebouncedSearchTerm,
+    ]);
+
+    useEffect(() => {
+        if (!isSearchError) return;
+
+        alert(
+            `An error has occurred: ${searchError.status} ${searchError.statusText}`
+        );
+    }, [isSearchError]);
 
     const handleSearch = e => {
         setSearchTerm(e.target.value);
-    }
+    };
 
-    return <div className="wrapper mt-20">
-        <SearchCountry searchTerm={searchTerm} onSearch={handleSearch} loading={isFetchingIds} />
+    const handleClearSearch = () => {
+        setSearchTerm("");
+    };
 
-        <CountriesList
-            data={countryIds}
-            loading={isLoading}
-            currentPage={pageId}
-            itemsPerPage={itemsPerPage}
-        />
+    return (
+        <div className="wrapper mt-10 lg:mt-20">
+            <SearchCountry
+                searchTerm={searchTerm}
+                onSearch={handleSearch}
+                onClear={handleClearSearch}
+                loading={isSearchingCountries}
+            />
 
-        {isError && (
-            <div className="text-lg font-semibold text-red-600 dark:text-red-100 flex flex-col items-center">
-                <GoAlert className="text-xl" strokeWidth="1px"/>
-                <p>
-                    An error has occurred: {error.status} {error.statusText}
-                </p>
-            </div>
-        )}
-
-
-        {isSuccess && !isError && (
-            <>
-                <div
-                    aria-hidden={true}
-                    className="mt-10 mb-3 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
-                />
-                <Pagination
+            <div className="mt-10 lg:mt-20">
+                <CountriesList
+                    data={countryIds}
+                    loading={isCountriesQueryLoading}
                     currentPage={pageId}
                     itemsPerPage={itemsPerPage}
-                    itemsTotal={countryIds?.length}
                 />
-            </>
-        )}
+            </div>
 
+            {isCountriesQueryError && (
+                <div className="text-lg font-semibold text-red-600 dark:text-red-100 flex flex-col items-center">
+                    <GoAlert className="w-7 h-7" strokeWidth="1px" />
+                    <p>
+                        An error has occurred: {countriesQueryError.status}{" "}
+                        {countriesQueryError.statusText}
+                    </p>
+                </div>
+            )}
 
-    </div>;
+            {isCountriesQuerySuccess && !isCountriesQueryError && (
+                <>
+                    <div
+                        aria-hidden={true}
+                        className="mt-10 mb-3 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
+                    />
+                    <Pagination
+                        currentPage={pageId}
+                        itemsPerPage={itemsPerPage}
+                        itemsTotal={countryIds?.length}
+                    />
+                </>
+            )}
+        </div>
+    );
 };
 
 export default CountriesPage;
