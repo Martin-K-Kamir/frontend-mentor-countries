@@ -79,8 +79,6 @@ const AlertItem = ({ alertId }) => {
     return (
         <div
             className={itemClasses}
-            data-zoom={isVisible}
-            data-expand={isExpanded}
             ref={ref}
             style={{ maxHeight }}
         >

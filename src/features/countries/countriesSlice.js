@@ -108,6 +108,12 @@ const extendedApi = api.injectEndpoints({
             transformResponse: response => {
                 return response.map(({ name }) => name.common);
             },
+            transformErrorResponse: ({status, data}) => {
+                return {
+                    status,
+                    message: data.message,
+                };
+            }
         }),
     }),
 });

@@ -11,26 +11,10 @@ export const store = configureStore({
         getDefaultMiddleware().concat(api.middleware),
 });
 
-store.dispatch(
-    addAlert({
-        message: "Success!",
-        timeout: 5000000,
-        variant: "success",
-    })
-);
-
-store.dispatch(
-    addAlert({
-        message: "Error!",
-        timeout: 5000000,
-        variant: "danger",
-    })
-);
-
-store.dispatch(
-    addAlert({
-        message: "Do you want to save your changes?",
-        timeout: 5000000,
-        variant: "info",
-    })
-);
+// store.dispatch(
+//     addAlert({
+//         message: "Success!",
+//         timeout: 5000000,
+//         variant: "success",
+//     })
+// );

@@ -11,6 +11,8 @@ import { GoAlert } from "react-icons/go";
 import SearchCountry from "./SearchCountry.jsx";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
+import { addAlert } from "../alert/alertSlice.js";
+import { store } from "../../app/store.js";
 
 const CountriesPage = () => {
     const navigate = useNavigate();
@@ -65,9 +67,16 @@ const CountriesPage = () => {
     useEffect(() => {
         if (!isSearchError) return;
 
-        alert(
-            `An error has occurred: ${searchError.status} ${searchError.statusText}`
+        let message = `An error has occurred: ${searchError.status} ${searchError.message}`;
+        if (searchError.status === 404) message = `No results found for "${debouncedSearchTerm}"`;
+
+        store.dispatch(
+            addAlert({
+                message,
+                variant: "danger",
+            })
         );
+
     }, [isSearchError]);
 
     const handleSearch = e => {
