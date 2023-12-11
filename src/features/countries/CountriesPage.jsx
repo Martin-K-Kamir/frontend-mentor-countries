@@ -13,6 +13,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { addAlert } from "../alert/alertSlice.js";
 import { store } from "../../app/store.js";
+import ErrorMessage from "../../components/ErrorMessage.jsx";
 
 const CountriesPage = () => {
     const navigate = useNavigate();
@@ -68,7 +69,8 @@ const CountriesPage = () => {
         if (!isSearchError) return;
 
         let message = `An error has occurred: ${searchError.status} ${searchError.message}`;
-        if (searchError.status === 404) message = `No results found for "${debouncedSearchTerm}"`;
+        if (searchError.status === 404)
+            message = `No results found for "${debouncedSearchTerm}"`;
 
         store.dispatch(
             addAlert({
@@ -76,7 +78,6 @@ const CountriesPage = () => {
                 variant: "danger",
             })
         );
-
     }, [isSearchError]);
 
     const handleSearch = e => {
@@ -106,13 +107,10 @@ const CountriesPage = () => {
             </div>
 
             {isCountriesQueryError && (
-                <div className="text-lg font-semibold text-red-600 dark:text-red-100 flex flex-col items-center">
-                    <GoAlert className="w-7 h-7" strokeWidth="1px" />
-                    <p>
-                        An error has occurred: {countriesQueryError.status}{" "}
-                        {countriesQueryError.statusText}
-                    </p>
-                </div>
+                <ErrorMessage
+                    message={`An error has occurred: ${countriesQueryError?.status}
+                        ${countriesQueryError?.message}`}
+                />
             )}
 
             {isCountriesQuerySuccess && !isCountriesQueryError && (

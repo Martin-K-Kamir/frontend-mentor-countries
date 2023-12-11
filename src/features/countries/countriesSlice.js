@@ -38,10 +38,16 @@ const extendedApi = api.injectEndpoints({
 
                 return countriesAdapter.setAll(initialState, data);
             },
+            transformErrorResponse: ({ status, data }) => {
+                return {
+                    status,
+                    message: data.message,
+                };
+            },
         }),
         getCountry: builder.query({
             query: id =>
-                `/name/${id}?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders&fullText=true`,
+                `/name/${id}a?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders&fullText=true`,
             transformResponse: response => {
                 const [data] = response;
 
@@ -96,6 +102,12 @@ const extendedApi = api.injectEndpoints({
                     ],
                 };
             },
+            transformErrorResponse: ({ status, data }) => {
+                return {
+                    status,
+                    message: data.message,
+                };
+            },
         }),
         getBorderCountries: builder.query({
             query: borders => `/alpha?codes=${borders}&fields=name`,
@@ -108,12 +120,12 @@ const extendedApi = api.injectEndpoints({
             transformResponse: response => {
                 return response.map(({ name }) => name.common);
             },
-            transformErrorResponse: ({status, data}) => {
+            transformErrorResponse: ({ status, data }) => {
                 return {
                     status,
                     message: data.message,
                 };
-            }
+            },
         }),
     }),
 });

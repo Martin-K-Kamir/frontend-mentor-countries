@@ -8,6 +8,7 @@ import { toCamelCase, toTitleCase } from "../../helpers.js";
 import CountryFlag from "./CountryFlag.jsx";
 import { GoAlert, GoArrowLeft } from "react-icons/go";
 import Spinner from "../../components/Spinner.jsx";
+import ErrorMessage from "../../components/ErrorMessage.jsx";
 
 const CountryPage = () => {
     const location = useLocation();
@@ -90,14 +91,11 @@ const CountryPage = () => {
             </div>
         );
     } else if (isError) {
-        content = (
-            <div className="text-lg font-semibold text-red-600 dark:text-red-100 flex flex-col items-center mt-20 lg:mt-32">
-                <GoAlert className="text-xl" strokeWidth="1px" />
-                <p>
-                    An error has occurred: {error.status} {error.statusText}
-                </p>
-            </div>
-        );
+        let message = `An error has occurred: ${error?.status} ${error?.message}`;
+        if (error?.status === 404)
+            message = `No results found for "${toTitleCase(countryId).trim()}"`;
+
+        content = <ErrorMessage message={message} className="mt-10 lg:mt-20" />;
     }
 
     return (
