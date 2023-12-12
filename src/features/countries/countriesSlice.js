@@ -16,7 +16,7 @@ const extendedApi = api.injectEndpoints({
                 const data = response.map(country => ({
                     name: country.name,
                     flags: country.flags,
-                    region: country.region.toLowerCase(),
+                    region: country.region,
                     info: [
                         {
                             label: "Population",
@@ -131,18 +131,28 @@ const selectCountriesData = createSelector(
 
 export const selectCountryIdsByRegion = createSelector(
     state => selectCountriesData(state)?.entities ?? initialState.entities,
-    (_, region) => region,
-    (countries, region) => {
+    (_, { region }) => region,
+    (_, { id }) => id,
+    (countries, region, id) => {
+        console.log({ countries, region, id });
 
-        console.log({countries, region})
-        return Object.values(countries)
-            .filter(country => country.region === region)
-            .map(country => country.name.common).sort( (a,b) => a.localeCompare(b))
+        if (id) {
+            return Object.values(countries)
+                .filter(country => country.region.toLowerCase() === region)
+                .filter(country => country.name.common === id)
+                .map(country => country.name.common)
+                .sort((a, b) => a.localeCompare(b));
+        } else {
+            return Object.values(countries)
+                .filter(country => country.region.toLowerCase() === region)
+                .map(country => country.name.common)
+                .sort((a, b) => a.localeCompare(b));
+        }
     },
     {
         memoizeOptions: {
             maxSize: 10,
-        }
+        },
     }
 );
 

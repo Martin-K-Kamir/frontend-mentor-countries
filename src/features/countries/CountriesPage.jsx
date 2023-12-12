@@ -48,9 +48,21 @@ const CountriesPage = () => {
         skip: !debouncedSearchTerm,
     });
 
-    const x = useSelector(state => selectCountryIdsByRegion(state, selectedRegion?.value));
+    const filteredCountryIds = useSelector(state =>
+        selectCountryIdsByRegion(state, {
+            region: selectedRegion?.value,
+            id: debouncedSearchTerm,
+        })
+    );
+
+    console.log({ filteredCountryIds });
 
     useEffect(() => {
+        if (filteredCountryIds.length > 0) {
+            setCountryIds(filteredCountryIds);
+            return;
+        }
+
         if (!lessDebouncedSearchTerm) {
             setCountryIds(countriesData?.ids || []);
             return;
@@ -70,6 +82,7 @@ const CountriesPage = () => {
         isSearchingCountries,
         debouncedSearchTerm,
         lessDebouncedSearchTerm,
+        filteredCountryIds,
     ]);
 
     useEffect(() => {
@@ -97,10 +110,11 @@ const CountriesPage = () => {
 
     const handleSelectChange = option => {
         setSelectedRegion(option);
-    }
+        navigate("/page/1");
+    };
 
     return (
-        <div className="wrapper mt-10 lg:mt-20">
+        <div className="wrapper mt-10 sm:mt-20 pb-28">
             <form className="flex flex-col gap-5 sm:flex-row sm:justify-between">
                 <SearchCountry
                     searchTerm={searchTerm}
@@ -114,18 +128,18 @@ const CountriesPage = () => {
                     value={selectedRegion}
                     onChange={handleSelectChange}
                     options={[
-                        { value: "africa", label: "Africa"},
-                        { value: "americas", label: "Americas"},
-                        { value: "asia", label: "Asia"},
-                        { value: "europe", label: "Europe"},
-                        { value: "oceania", label: "Oceania"},
+                        { value: "africa", label: "Africa" },
+                        { value: "americas", label: "Americas" },
+                        { value: "asia", label: "Asia" },
+                        { value: "europe", label: "Europe" },
+                        { value: "oceania", label: "Oceania" },
                     ]}
                 />
             </form>
 
-            <div className="mt-10 lg:mt-20">
+            <div className="mt-10 sm:mt-20">
                 <CountriesList
-                    data={x.length > 0 ? x : countryIds}
+                    data={countryIds}
                     loading={isCountriesQueryLoading}
                     currentPage={pageId}
                     itemsPerPage={itemsPerPage}
@@ -133,16 +147,14 @@ const CountriesPage = () => {
             </div>
 
             {isCountriesQueryError && (
-                <ErrorMessage
-                    message="An error has occurred. Please try again later."
-                />
+                <ErrorMessage message="An error has occurred. Please try again later." />
             )}
 
             {isCountriesQuerySuccess && !isCountriesQueryError && (
                 <>
                     <div
                         aria-hidden={true}
-                        className="mt-10 mb-3 h-[0.1px] w-full bg-zinc-200 dark:bg-shark-800"
+                        className="mt-10 mb-5 h-[0.5px] w-full bg-zinc-200 dark:bg-shark-800"
                     />
                     <Pagination
                         currentPage={pageId}

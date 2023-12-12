@@ -22,7 +22,7 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
         +currentPage === Math.ceil(itemsTotal / itemsPerPage);
 
     return (
-        <div className="flex items-center justify-between gap-3 flex-col lg:flex-row">
+        <div className="flex items-center lg:items-start justify-between gap-3 flex-col lg:flex-row">
             <p className="text-sm">
                 Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
                 {Math.min(currentPage * itemsPerPage, itemsTotal)} of{" "}

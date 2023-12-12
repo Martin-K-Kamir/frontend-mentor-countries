@@ -9,8 +9,11 @@ import CountryFlag from "./CountryFlag.jsx";
 import { GoAlert, GoArrowLeft } from "react-icons/go";
 import Spinner from "../../components/Spinner.jsx";
 import ErrorMessage from "../../components/ErrorMessage.jsx";
+import { useMediaQuery } from "@uidotdev/usehooks";
+import { ABOVE_SM } from "../../app/config.js";
 
 const CountryPage = () => {
+    const isAboveSm = useMediaQuery(ABOVE_SM);
     const location = useLocation();
     const from = location.state?.from ?? "1";
     const { countryId } = useParams();
@@ -95,14 +98,20 @@ const CountryPage = () => {
         if (error?.status === 404)
             message = `No results found for "${toTitleCase(countryId).trim()}"`;
 
-        content = <ErrorMessage message={message} className="mt-10 lg:mt-20" />;
+        content = (
+            <ErrorMessage
+                message={message}
+                className="mt-10 sm:mt-20 sm:whitespace-nowrap"
+            />
+        );
     }
 
     return (
         <div className="max-w-lg mx-auto px-8 pb-20 lg:max-w-none lg:mx-auto lg:px-0 lg:wrapper">
-            <div className="mt-10 lg:mt-20">
+            <div className="mt-10 sm:mt-20">
                 <Button
                     bold
+                    size={isAboveSm ? "md" : "sm"}
                     to={`/page/${from}`}
                     startIcon={
                         <GoArrowLeft

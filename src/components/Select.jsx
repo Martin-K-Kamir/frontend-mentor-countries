@@ -9,13 +9,13 @@ const Select = ({ options, value, label, onChange }) => {
     const [currentValue, setCurrentValue] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
 
-    // useEffect(() => {
-    //     document.addEventListener("click", handleOutsideClick, true);
-    //
-    //     return () => {
-    //         document.removeEventListener("click", handleOutsideClick);
-    //     };
-    // }, []);
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick, true);
+
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
 
     const toggleIsOpen = () => {
         setIsOpen(prevIsOpen => !prevIsOpen);
@@ -33,8 +33,8 @@ const Select = ({ options, value, label, onChange }) => {
 
     const handleOptionClick = option => {
         if (option.value === currentValue?.value) {
-            onChange({value: "default"});
-            setCurrentValue({value: "default"});
+            onChange({ value: "default" });
+            setCurrentValue({ value: "default" });
         } else {
             onChange(option);
             setCurrentValue(option);
@@ -42,14 +42,14 @@ const Select = ({ options, value, label, onChange }) => {
         setIsOpen(false);
     };
 
-
-    const renderedOptions = options.map(({value, label}, i, arr) => {
+    const renderedOptions = options.map(({ value, label }, i, arr) => {
         return (
             <li
                 key={value}
                 role="option"
+                className="cursor-pointer :hover:bg-gray-100 dark:hover:bg-shark-800 py-1.5 px-5 sm:px-6 select-none"
                 tabIndex={0}
-                onClick={() => handleOptionClick({value, label})}
+                onClick={() => handleOptionClick({ value, label })}
                 aria-disabled={value === "default"}
                 aria-hidden={value === "default"}
                 aria-setsize={arr.length}
@@ -60,12 +60,15 @@ const Select = ({ options, value, label, onChange }) => {
             >
                 {label}
             </li>
-        )
-    })
+        );
+    });
 
     return (
-        <div className="relative inline-flex w-max flex-shrink-0">
-            <div onClick={handleLabelClick} className="flex items-center gap-5 bg-white dark:bg-shark-900 p-4 px-6 rounded-lg shadow-md cursor-pointer">
+        <div ref={ref} className="relative inline-flex w-max flex-shrink-0">
+            <div
+                onClick={handleLabelClick}
+                className="flex items-center gap-5 bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 rounded-lg shadow-md cursor-pointer select-none"
+            >
                 <div>
                     {value?.label ?? label ?? "Select an option"}
                     {/* This div is used to pre-render all possible select options offscreen.
@@ -82,23 +85,26 @@ const Select = ({ options, value, label, onChange }) => {
                     </div>
                 </div>
 
-                {
-                    isOpen ? (
-                        <GoChevronUp className="w-4 h-4 flex-shrink-0" strokeWidth="0.5px" />
-                    ) : (
-                        <GoChevronDown className="w-4 h-4 flex-shrink-0" strokeWidth="0.5px"/>
-                    )
-                }
+                {isOpen ? (
+                    <GoChevronUp
+                        className="w-4 h-4 flex-shrink-0"
+                        strokeWidth="0.5px"
+                    />
+                ) : (
+                    <GoChevronDown
+                        className="w-4 h-4 flex-shrink-0"
+                        strokeWidth="0.5px"
+                    />
+                )}
             </div>
 
             {isOpen && (
-                <ul className="bg-white w-full dark:bg-shark-900 p-4 px-6 rounded-lg shadow-md absolute z-10 -bottom-2 translate-y-full">
+                <ul className="bg-white w-full dark:bg-shark-900 py-1.5 rounded-lg shadow-md absolute z-10 -bottom-2 translate-y-full">
                     {renderedOptions}
                 </ul>
             )}
         </div>
-    )
-}
-
+    );
+};
 
 export default Select;
