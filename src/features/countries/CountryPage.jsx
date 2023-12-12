@@ -91,7 +91,7 @@ const CountryPage = () => {
             </div>
         );
     } else if (isError) {
-        let message = `An error has occurred: ${error?.status} ${error?.message}`;
+        let message = "An error has occurred. Please try again later.";
         if (error?.status === 404)
             message = `No results found for "${toTitleCase(countryId).trim()}"`;
 

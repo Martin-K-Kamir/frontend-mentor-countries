@@ -6,13 +6,13 @@ import IconButton from "../../components/IconButton.jsx";
 import { useEffect, useRef } from "react";
 
 const SearchCountry = ({
-    searchTerm,
-    onSearch,
-    onClear,
-    loading,
-    placeholder,
-    ...rest
-}) => {
+                           searchTerm,
+                           onSearch,
+                           onClear,
+                           loading,
+                           placeholder,
+                           ...rest
+                       }) => {
     const ref = useRef();
 
     const classes = classnames(
@@ -24,7 +24,7 @@ const SearchCountry = ({
         "opacity-0 invisible": !searchTerm,
     });
 
-    const spinnerClasses = classnames("w-5 h-5 flex-shrink-0", {
+    const spinnerClasses = classnames("absolute right-6 w-5 h-5 flex-shrink-0", {
         "opacity-0 invisible": !loading,
     });
 
@@ -47,39 +47,37 @@ const SearchCountry = ({
     };
 
     return (
-        <form ref={ref} onClick={handleFocusClick}>
-            <div className={classes}>
-                <TbSearch className="w-4 h-4 flex-shrink-0" />
+        <div className={classes} ref={ref} onClick={handleFocusClick}>
+            <TbSearch className="w-4 h-4 flex-shrink-0"/>
 
-                <input
-                    {...rest}
-                    type="text"
-                    value={searchTerm}
-                    onChange={onSearch}
-                    placeholder={placeholder ?? "Search for a country..."}
-                    className="bg-transparent w-full outline-none leading-none"
-                    autoCorrect="false"
-                />
+            <input
+                {...rest}
+                type="text"
+                value={searchTerm}
+                onChange={onSearch}
+                placeholder={placeholder ?? "Search for a country..."}
+                className="bg-transparent w-full outline-none leading-none"
+                autoCorrect="false"
+            />
 
-                {loading ? (
-                    <Spinner className={spinnerClasses} />
-                ) : (
-                    <IconButton
-                        variant="text"
-                        className={clearClasses}
-                        onClick={onClear}
-                        type="button"
-                        aria-label="Clear search"
-                        title="Clear search"
-                    >
-                        <CgClose
-                            className="w-4 h-4 flex-shrink-0"
-                            strokeWidth="0.3px"
-                        />
-                    </IconButton>
-                )}
-            </div>
-        </form>
+            {loading ? (
+                <Spinner className={spinnerClasses}/>
+            ) : (
+                <IconButton
+                    variant="text"
+                    className={clearClasses}
+                    onClick={onClear}
+                    type="button"
+                    aria-label="Clear search"
+                    title="Clear search"
+                >
+                    <CgClose
+                        className="w-4 h-4 flex-shrink-0"
+                        strokeWidth="0.3px"
+                    />
+                </IconButton>
+            )}
+        </div>
     );
 };
 

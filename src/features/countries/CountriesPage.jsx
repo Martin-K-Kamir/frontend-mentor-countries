@@ -3,17 +3,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { ABOVE_SM, BELOW_LG } from "../../app/config.js";
 import {
+    selectCountryIdsByRegion,
     useGetCountriesQuery,
     useSearchCountryQuery,
 } from "./countriesSlice.js";
 import Pagination from "../../components/Pagination.jsx";
-import { GoAlert } from "react-icons/go";
 import SearchCountry from "./SearchCountry.jsx";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { addAlert } from "../alert/alertSlice.js";
 import { store } from "../../app/store.js";
 import ErrorMessage from "../../components/ErrorMessage.jsx";
+import Select from "../../components/Select.jsx";
+import { useSelector } from "react-redux";
 
 const CountriesPage = () => {
     const navigate = useNavigate();
@@ -21,8 +23,11 @@ const CountriesPage = () => {
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
     const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
+
+    const [selectedRegion, setSelectedRegion] = useState(null);
     const [countryIds, setCountryIds] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+
     const lessDebouncedSearchTerm = useDebounce(searchTerm, 300);
     const debouncedSearchTerm = useDebounce(searchTerm, 1_000);
 
@@ -31,8 +36,8 @@ const CountriesPage = () => {
         isSuccess: isCountriesQuerySuccess,
         isLoading: isCountriesQueryLoading,
         isError: isCountriesQueryError,
-        error: countriesQueryError,
     } = useGetCountriesQuery();
+
     const {
         currentData: searchResults,
         isFetching: isSearchingCountries,
@@ -42,6 +47,8 @@ const CountriesPage = () => {
     } = useSearchCountryQuery(debouncedSearchTerm, {
         skip: !debouncedSearchTerm,
     });
+
+    const x = useSelector(state => selectCountryIdsByRegion(state, selectedRegion?.value));
 
     useEffect(() => {
         if (!lessDebouncedSearchTerm) {
@@ -68,8 +75,8 @@ const CountriesPage = () => {
     useEffect(() => {
         if (!isSearchError) return;
 
-        let message = `An error has occurred: ${searchError.status} ${searchError.message}`;
-        if (searchError.status === 404)
+        let message = "An error has occurred. Please try again later.";
+        if (searchError?.status === 404)
             message = `No results found for "${debouncedSearchTerm}"`;
 
         store.dispatch(
@@ -88,18 +95,37 @@ const CountriesPage = () => {
         setSearchTerm("");
     };
 
+    const handleSelectChange = option => {
+        setSelectedRegion(option);
+    }
+
     return (
         <div className="wrapper mt-10 lg:mt-20">
-            <SearchCountry
-                searchTerm={searchTerm}
-                onSearch={handleSearch}
-                onClear={handleClearSearch}
-                loading={isSearchingCountries}
-            />
+            <form className="flex flex-col gap-5 sm:flex-row sm:justify-between">
+                <SearchCountry
+                    searchTerm={searchTerm}
+                    onSearch={handleSearch}
+                    onClear={handleClearSearch}
+                    loading={isSearchingCountries}
+                />
+
+                <Select
+                    label="Filter by Region"
+                    value={selectedRegion}
+                    onChange={handleSelectChange}
+                    options={[
+                        { value: "africa", label: "Africa"},
+                        { value: "americas", label: "Americas"},
+                        { value: "asia", label: "Asia"},
+                        { value: "europe", label: "Europe"},
+                        { value: "oceania", label: "Oceania"},
+                    ]}
+                />
+            </form>
 
             <div className="mt-10 lg:mt-20">
                 <CountriesList
-                    data={countryIds}
+                    data={x.length > 0 ? x : countryIds}
                     loading={isCountriesQueryLoading}
                     currentPage={pageId}
                     itemsPerPage={itemsPerPage}
@@ -108,8 +134,7 @@ const CountriesPage = () => {
 
             {isCountriesQueryError && (
                 <ErrorMessage
-                    message={`An error has occurred: ${countriesQueryError?.status}
-                        ${countriesQueryError?.message}`}
+                    message="An error has occurred. Please try again later."
                 />
             )}
 

@@ -16,6 +16,7 @@ const extendedApi = api.injectEndpoints({
                 const data = response.map(country => ({
                     name: country.name,
                     flags: country.flags,
+                    region: country.region.toLowerCase(),
                     info: [
                         {
                             label: "Population",
@@ -38,16 +39,10 @@ const extendedApi = api.injectEndpoints({
 
                 return countriesAdapter.setAll(initialState, data);
             },
-            transformErrorResponse: ({ status, data }) => {
-                return {
-                    status,
-                    message: data.message,
-                };
-            },
         }),
         getCountry: builder.query({
             query: id =>
-                `/name/${id}a?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders&fullText=true`,
+                `/name/${id}?fields=name,flags,population,capital,region,subregion,tld,currencies,languages,borders&fullText=true`,
             transformResponse: response => {
                 const [data] = response;
 
@@ -102,12 +97,6 @@ const extendedApi = api.injectEndpoints({
                     ],
                 };
             },
-            transformErrorResponse: ({ status, data }) => {
-                return {
-                    status,
-                    message: data.message,
-                };
-            },
         }),
         getBorderCountries: builder.query({
             query: borders => `/alpha?codes=${borders}&fields=name`,
@@ -119,12 +108,6 @@ const extendedApi = api.injectEndpoints({
             query: name => `/name/${name}?fields=name`,
             transformResponse: response => {
                 return response.map(({ name }) => name.common);
-            },
-            transformErrorResponse: ({ status, data }) => {
-                return {
-                    status,
-                    message: data.message,
-                };
             },
         }),
     }),
@@ -146,11 +129,21 @@ const selectCountriesData = createSelector(
     countriesResult => countriesResult.data
 );
 
-const selectCountriesByRegion = createSelector(
-    selectCountriesData,
+export const selectCountryIdsByRegion = createSelector(
+    state => selectCountriesData(state)?.entities ?? initialState.entities,
     (_, region) => region,
-    (countries, region) =>
-        countries?.filter(country => country.region === region)
+    (countries, region) => {
+
+        console.log({countries, region})
+        return Object.values(countries)
+            .filter(country => country.region === region)
+            .map(country => country.name.common).sort( (a,b) => a.localeCompare(b))
+    },
+    {
+        memoizeOptions: {
+            maxSize: 10,
+        }
+    }
 );
 
 export const {
