@@ -1,5 +1,7 @@
 import { api } from "../api/api";
-import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
+import { createEntityAdapter } from "@reduxjs/toolkit";
+import { createSelector, weakMapMemoize } from 'reselect'
+
 
 export const countriesAdapter = createEntityAdapter({
     selectId: country => country.name.common,
@@ -16,7 +18,7 @@ const extendedApi = api.injectEndpoints({
                 const data = response.map(country => ({
                     name: country.name,
                     flags: country.flags,
-                    region: country.region,
+                    region: country.region.toLowerCase(),
                     info: [
                         {
                             label: "Population",
@@ -131,28 +133,19 @@ const selectCountriesData = createSelector(
 
 export const selectCountryIdsByRegion = createSelector(
     state => selectCountriesData(state)?.entities ?? initialState.entities,
-    (_, { region }) => region,
-    (_, { id }) => id,
-    (countries, region, id) => {
-        console.log({ countries, region, id });
+    (_, searchResults) => searchResults,
+    (_, __, region) => region,
+    (countries, searchResults, region) => {
+        // console.log({ countries, searchResults, region });
 
-        if (id) {
-            return Object.values(countries)
-                .filter(country => country.region.toLowerCase() === region)
-                .filter(country => country.name.common === id)
-                .map(country => country.name.common)
-                .sort((a, b) => a.localeCompare(b));
-        } else {
-            return Object.values(countries)
-                .filter(country => country.region.toLowerCase() === region)
-                .map(country => country.name.common)
-                .sort((a, b) => a.localeCompare(b));
-        }
+        const data = searchResults ? searchResults.map(nameId => countries[nameId]) : Object.values(countries);
+        const filteredData = data.filter(country => country.region === region).map(country => country.name.common);
+        return searchResults ? filteredData : filteredData.sort((a, b) => a.localeCompare(b));
+
     },
     {
-        memoizeOptions: {
-            maxSize: 10,
-        },
+        memoize: weakMapMemoize,
+        argsMemoize: weakMapMemoize
     }
 );
 

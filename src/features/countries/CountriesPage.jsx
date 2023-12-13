@@ -49,19 +49,11 @@ const CountriesPage = () => {
     });
 
     const filteredCountryIds = useSelector(state =>
-        selectCountryIdsByRegion(state, {
-            region: selectedRegion?.value,
-            id: debouncedSearchTerm,
-        })
+        selectCountryIdsByRegion(state, searchResults, selectedRegion?.value)
     );
 
-    console.log({ filteredCountryIds });
-
     useEffect(() => {
-        if (filteredCountryIds.length > 0) {
-            setCountryIds(filteredCountryIds);
-            return;
-        }
+        if (selectedRegion) return;
 
         if (!lessDebouncedSearchTerm) {
             setCountryIds(countriesData?.ids || []);
@@ -78,12 +70,22 @@ const CountriesPage = () => {
         }
     }, [
         isCountriesQuerySuccess,
-        isSearchSuccess,
         isSearchingCountries,
+        isSearchSuccess,
+        isSearchError,
         debouncedSearchTerm,
         lessDebouncedSearchTerm,
-        filteredCountryIds,
+        selectedRegion,
     ]);
+
+    useEffect(() => {
+        if (isSearchError) return;
+
+        if (selectedRegion && !isSearchingCountries) {
+            setCountryIds(filteredCountryIds);
+            navigate("/page/1");
+        }
+    }, [selectedRegion, isSearchingCountries, isSearchSuccess, filteredCountryIds, isSearchError]);
 
     useEffect(() => {
         if (!isSearchError) return;
@@ -110,7 +112,6 @@ const CountriesPage = () => {
 
     const handleSelectChange = option => {
         setSelectedRegion(option);
-        navigate("/page/1");
     };
 
     return (
