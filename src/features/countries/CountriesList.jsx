@@ -1,4 +1,5 @@
 import CountriesListItem from "./CountriesListItem.jsx";
+import ErrorMessage from "../../components/ErrorMessage.jsx";
 
 const CountriesList = ({data, currentPage, itemsPerPage, loading}) => {
 
@@ -15,6 +16,14 @@ const CountriesList = ({data, currentPage, itemsPerPage, loading}) => {
         list = data;
     }
 
+    const isListEmpty = list?.length === 0;
+
+    if (isListEmpty) {
+        return (
+            <ErrorMessage message="No countries found."/>
+        );
+    }
+
     return (
         <ul className="grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10 lg:gap-14">
             {list.map(countryId => (
@@ -23,5 +32,4 @@ const CountriesList = ({data, currentPage, itemsPerPage, loading}) => {
         </ul>
     );
 };
-
 export default CountriesList;

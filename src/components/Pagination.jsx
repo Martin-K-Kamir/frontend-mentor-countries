@@ -17,17 +17,19 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
         navigate(`/page/${+currentPage + 1}`);
     };
 
-    const isPrevDisabled = +currentPage === 1;
+    const isPrevDisabled = +currentPage === 1 || itemsTotal === 0;
     const isNextDisabled =
-        +currentPage === Math.ceil(itemsTotal / itemsPerPage);
+        +currentPage === Math.ceil(itemsTotal / itemsPerPage) || itemsTotal === 0;
 
     return (
-        <div className="flex items-center lg:items-start justify-between gap-3 flex-col lg:flex-row">
-            <p className="text-sm">
-                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                {Math.min(currentPage * itemsPerPage, itemsTotal)} of{" "}
-                {itemsTotal} results
-            </p>
+        <div className="flex items-center lg:items-start justify-between gap-4 flex-col-reverse lg:flex-row">
+            {itemsTotal > 0 && (
+                <p className="text-sm">
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                    {Math.min(currentPage * itemsPerPage, itemsTotal)} of{" "}
+                    {itemsTotal} results
+                </p>
+            )}
             <div className="flex gap-3">
                 <Button
                     bold

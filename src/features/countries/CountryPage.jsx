@@ -11,6 +11,7 @@ import Spinner from "../../components/Spinner.jsx";
 import ErrorMessage from "../../components/ErrorMessage.jsx";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { ABOVE_SM } from "../../app/config.js";
+import { useEffect } from "react";
 
 const CountryPage = () => {
     const isAboveSm = useMediaQuery(ABOVE_SM);
@@ -20,7 +21,6 @@ const CountryPage = () => {
 
     const {
         data: country,
-        isLoading,
         isFetching,
         isSuccess,
         isError,
@@ -35,6 +35,21 @@ const CountryPage = () => {
     );
 
     const { name, flags, info } = country || {};
+
+
+    useEffect(() => {
+        const originalTitle = document.title;
+
+        if (name) {
+            document.title = `${name} | Where in the world?`;
+        } else {
+            document.title = "Where in the world?";
+        }
+
+        return () => {
+            document.title = originalTitle;
+        };
+    }, [name]);
 
     let content;
     if (isFetching) {
@@ -70,7 +85,7 @@ const CountryPage = () => {
             <div className="flex flex-col lg:flex-row mt-10 lg:mt-20 gap-7 lg:gap-12 lg:justify-between">
                 <div className="max-w-lg w-full">
                     <CountryFlag
-                        className="rounded-lg max-h-96 w-full shadow-lg"
+                        className="rounded-lg max-h-96 w-full shadow-lg bg-white"
                         flags={flags}
                     />
                 </div>

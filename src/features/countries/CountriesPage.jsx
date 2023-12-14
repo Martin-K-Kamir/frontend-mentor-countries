@@ -1,7 +1,7 @@
 import CountriesList from "./CountriesList.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { ABOVE_SM, BELOW_LG } from "../../app/config.js";
+import { ABOVE_SM, ALERT_TIMEOUT_LONG, BELOW_LG } from "../../app/config.js";
 import {
     selectCountryIdsByRegion,
     useGetCountriesQuery,
@@ -29,7 +29,7 @@ const CountriesPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const lessDebouncedSearchTerm = useDebounce(searchTerm, 300);
-    const debouncedSearchTerm = useDebounce(searchTerm, 1_000);
+    const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
     const {
         data: countriesData,
@@ -89,6 +89,7 @@ const CountriesPage = () => {
 
     useEffect(() => {
         if (!isSearchError) return;
+        setSearchTerm("");
 
         let message = "An error has occurred. Please try again later.";
         if (searchError?.status === 404)
@@ -98,6 +99,7 @@ const CountriesPage = () => {
             addAlert({
                 message,
                 variant: "danger",
+                timeout: ALERT_TIMEOUT_LONG,
             })
         );
     }, [isSearchError]);
@@ -169,3 +171,153 @@ const CountriesPage = () => {
 };
 
 export default CountriesPage;
+
+/*
+REFACTORED VERSION TO BE TESTED LATER
+import CountriesList from "./CountriesList.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMediaQuery } from "@uidotdev/usehooks";
+import { ABOVE_SM, BELOW_LG } from "../../app/config.js";
+import {
+    selectCountryIdsByRegion,
+    useGetCountriesQuery,
+    useSearchCountryQuery,
+} from "./countriesSlice.js";
+import Pagination from "../../components/Pagination.jsx";
+import SearchCountry from "./SearchCountry.jsx";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useEffect, useState } from "react";
+import { addAlert } from "../alert/alertSlice.js";
+import { store } from "../../app/store.js";
+import ErrorMessage from "../../components/ErrorMessage.jsx";
+import Select from "../../components/Select.jsx";
+import { useSelector } from "react-redux";
+
+const CountriesPage = () => {
+    const navigate = useNavigate();
+    const {pageId} = useParams();
+    const itemsPerPage = useMediaQuery(BELOW_LG) && useMediaQuery(ABOVE_SM) ? 9 : 8;
+
+    const [selectedRegion, setSelectedRegion] = useState(null);
+    const [countryIds, setCountryIds] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const debouncedSearchTerm = useDebounce(searchTerm, 700);
+
+    const {
+        data: countriesData,
+        isSuccess: isCountriesQuerySuccess,
+        isLoading: isCountriesQueryLoading,
+        isError: isCountriesQueryError,
+    } = useGetCountriesQuery();
+    const {
+        currentData: searchResults,
+        isFetching: isSearchingCountries,
+        isSuccess: isSearchSuccess,
+        isError: isSearchError,
+        error: searchError,
+    } = useSearchCountryQuery(debouncedSearchTerm, {
+        skip: !debouncedSearchTerm,
+    });
+
+    const filteredCountryIds = useSelector(state =>
+        selectCountryIdsByRegion(state, searchResults, selectedRegion?.value)
+    );
+
+    useEffect(() => {
+        if (selectedRegion && !isSearchingCountries) {
+            setCountryIds(filteredCountryIds);
+            navigate("/page/1");
+        } else if (isSearchSuccess && !isSearchingCountries) {
+            setCountryIds(searchResults);
+            navigate("/page/1");
+        } else if (isCountriesQuerySuccess && !debouncedSearchTerm) {
+            setCountryIds(countriesData?.ids);
+        } else if (isSearchError) {
+            let message = searchError?.status === 404
+                ? `No results found for "${debouncedSearchTerm}"`
+                : "An error has occurred. Please try again later.";
+            store.dispatch(
+                addAlert({
+                    message,
+                    variant: "danger",
+                })
+            );
+        }
+    }, [
+        isCountriesQuerySuccess,
+        isSearchingCountries,
+        isSearchSuccess,
+        isSearchError,
+        debouncedSearchTerm,
+        selectedRegion,
+    ]);
+
+    const handleSearch = e => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearchTerm("");
+    };
+
+    const handleSelectChange = option => {
+        setSelectedRegion(option);
+    };
+
+    return (
+        <div className="wrapper mt-10 sm:mt-20 pb-28">
+            <form className="flex flex-col gap-5 sm:flex-row sm:justify-between">
+                <SearchCountry
+                    searchTerm={searchTerm}
+                    onSearch={handleSearch}
+                    onClear={handleClearSearch}
+                    loading={isSearchingCountries}
+                />
+
+                <Select
+                    label="Filter by Region"
+                    value={selectedRegion}
+                    onChange={handleSelectChange}
+                    options={[
+                        {value: "africa", label: "Africa"},
+                        {value: "americas", label: "Americas"},
+                        {value: "asia", label: "Asia"},
+                        {value: "europe", label: "Europe"},
+                        {value: "oceania", label: "Oceania"},
+                    ]}
+                />
+            </form>
+
+            <div className="mt-10 sm:mt-20">
+                <CountriesList
+                    data={countryIds}
+                    loading={isCountriesQueryLoading}
+                    currentPage={pageId}
+                    itemsPerPage={itemsPerPage}
+                />
+            </div>
+
+            {isCountriesQueryError && (
+                <ErrorMessage message="An error has occurred. Please try again later."/>
+            )}
+
+            {isCountriesQuerySuccess && !isCountriesQueryError && (
+                <>
+                    <div
+                        aria-hidden={true}
+                        className="mt-10 mb-5 h-[0.5px] w-full bg-zinc-200 dark:bg-shark-800"
+                    />
+                    <Pagination
+                        currentPage={pageId}
+                        itemsPerPage={itemsPerPage}
+                        itemsTotal={countryIds?.length}
+                    />
+                </>
+            )}
+        </div>
+    );
+};
+
+export default CountriesPage;
+ */
