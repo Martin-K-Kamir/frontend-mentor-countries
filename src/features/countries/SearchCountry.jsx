@@ -3,7 +3,7 @@ import Spinner from "../../components/Spinner.jsx";
 import { TbSearch } from "react-icons/tb";
 import { CgClose } from "react-icons/cg";
 import IconButton from "../../components/IconButton.jsx";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SearchCountry = ({
     searchTerm,
@@ -11,12 +11,19 @@ const SearchCountry = ({
     onClear,
     loading,
     placeholder,
+    disabled,
     ...rest
 }) => {
     const ref = useRef();
+    const [isFocused, setIsFocused] = useState(false);
+    const [isTabPressed, setIsTabPressed] = useState(false);
 
     const classes = classnames(
-        "flex items-center relative sm:max-w-md w-full bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 gap-4 rounded-lg shadow-md cursor-text",
+        "flex items-center relative sm:max-w-md w-full bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 gap-4 rounded-lg shadow-md cursor-text transition-opacity",
+        {
+            "opacity-50 pointer-events-none": disabled,
+            outline: isFocused,
+        },
         rest.className
     );
 
@@ -32,9 +39,25 @@ const SearchCountry = ({
     );
 
     useEffect(() => {
+        const handleKeyDown = e => {
+            if (e.key === "Tab") {
+                setIsTabPressed(true);
+            }
+        };
+
+        const handleKeyUp = e => {
+            if (e.key === "Tab") {
+                setIsTabPressed(false);
+            }
+        };
+
+        document.addEventListener("keyup", handleKeyUp);
+        document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("keydown", handleEscape);
 
         return () => {
+            document.removeEventListener("keyup", handleKeyUp);
+            document.removeEventListener("keydown", handleKeyDown);
             document.removeEventListener("keydown", handleEscape);
         };
     }, []);
@@ -49,8 +72,24 @@ const SearchCountry = ({
         ref.current.querySelector("input").focus();
     };
 
+    const handleFocus = e => {
+        if (isTabPressed) {
+            setIsFocused(true);
+        }
+    };
+
+    const handleBlur = () => {
+        setIsFocused(false);
+    };
+
     return (
-        <div className={classes} ref={ref} onClick={handleFocusClick}>
+        <div
+            className={classes}
+            ref={ref}
+            onClick={handleFocusClick}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+        >
             <TbSearch className="w-4 h-4 flex-shrink-0" />
 
             <input

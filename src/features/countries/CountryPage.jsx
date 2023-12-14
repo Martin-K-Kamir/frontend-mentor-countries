@@ -36,12 +36,11 @@ const CountryPage = () => {
 
     const { name, flags, info } = country || {};
 
-
     useEffect(() => {
         const originalTitle = document.title;
 
         if (name) {
-            document.title = `${name} | Where in the world?`;
+            document.title = `${name} | Where in the world`;
         } else {
             document.title = "Where in the world?";
         }

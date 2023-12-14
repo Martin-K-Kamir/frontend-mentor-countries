@@ -13,7 +13,7 @@ export const apiLongRunningRequest = async (
         dispatch(
             addAlert({
                 message,
-                isWarning: true,
+                variant: "warning",
                 timeout: alertTimeout,
             })
         );

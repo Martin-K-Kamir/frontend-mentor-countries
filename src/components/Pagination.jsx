@@ -19,7 +19,8 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
 
     const isPrevDisabled = +currentPage === 1 || itemsTotal === 0;
     const isNextDisabled =
-        +currentPage === Math.ceil(itemsTotal / itemsPerPage) || itemsTotal === 0;
+        +currentPage === Math.ceil(itemsTotal / itemsPerPage) ||
+        itemsTotal === 0;
 
     return (
         <div className="flex items-center lg:items-start justify-between gap-4 flex-col-reverse lg:flex-row">
@@ -30,7 +31,7 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
                     {itemsTotal} results
                 </p>
             )}
-            <div className="flex gap-3">
+            <div className="flex gap-3 ml-auto">
                 <Button
                     bold
                     size="sm"

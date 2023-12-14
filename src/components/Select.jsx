@@ -1,13 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
+import classnames from "classnames";
 
-const Select = ({ options, value, label, onChange }) => {
+const Select = ({ options, value, label, onChange, disabled }) => {
     const ref = useRef();
+    const refs = useRef([]);
+    refs.current = options.map((_, i) => refs.current[i] ?? createRef());
     const idRef = useRef(nanoid());
 
     const [currentValue, setCurrentValue] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
+
+    const classes = classnames(
+        "relative inline-flex w-max flex-shrink-0 transition-opacity rounded-lg focus:outline outline-inherit outline-2",
+        {
+            "opacity-50 pointer-events-none": disabled,
+        }
+    );
 
     useEffect(() => {
         document.addEventListener("click", handleOutsideClick, true);
@@ -31,6 +41,72 @@ const Select = ({ options, value, label, onChange }) => {
         }
     };
 
+    const handleEnterKey = e => {
+        if (e.target !== ref.current) return;
+
+        toggleIsOpen();
+    };
+
+    const handleArrowDownKey = e => {
+        if (e.target !== ref.current) return;
+
+        e.preventDefault();
+
+        if (!isOpen) {
+            setIsOpen(true);
+        } else {
+            const index = options.findIndex(
+                option => option.value === currentValue?.value
+            );
+
+            if (index === options.length - 1) {
+                setCurrentValue(options[0]);
+                refs.current[0].current.focus();
+            } else {
+                setCurrentValue(options[index + 1]);
+                refs.current[index + 1].current.focus();
+            }
+        }
+    };
+
+    const handleArrowUpKey = e => {
+        if (e.target !== ref.current) return;
+
+        e.preventDefault();
+
+        if (!isOpen) {
+            setIsOpen(true);
+        } else {
+            const index = options.findIndex(
+                option => option.value === currentValue?.value
+            );
+
+            if (index === 0) {
+                setCurrentValue(options[options.length - 1]);
+                refs.current[options.length - 1].current.focus();
+            } else {
+                setCurrentValue(options[index - 1]);
+                refs.current[index - 1].current.focus();
+            }
+        }
+    };
+
+    const handleKeyDown = e => {
+        switch (e.key) {
+            case "Enter":
+                handleEnterKey(e);
+                break;
+            case "ArrowDown":
+                handleArrowDownKey(e);
+                break;
+            case "ArrowUp":
+                handleArrowUpKey(e);
+                break;
+            default:
+                break;
+        }
+    };
+
     const handleOptionClick = option => {
         if (option.value === currentValue?.value) {
             onChange(null);
@@ -46,8 +122,9 @@ const Select = ({ options, value, label, onChange }) => {
         return (
             <li
                 key={value}
+                ref={refs.current[i]}
                 role="option"
-                className="cursor-pointer :hover:bg-gray-100 dark:hover:bg-shark-800 py-1.5 px-5 sm:px-6 select-none"
+                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-shark-800 focus:bg-gray-100 focus:hover:bg-shark-800 py-1.5 px-5 sm:px-6 select-none  "
                 tabIndex={0}
                 onClick={() => handleOptionClick({ value, label })}
                 aria-disabled={value === "default"}
@@ -64,7 +141,18 @@ const Select = ({ options, value, label, onChange }) => {
     });
 
     return (
-        <div ref={ref} className="relative inline-flex w-max flex-shrink-0">
+        <div
+            ref={ref}
+            className={classes}
+            tabIndex="0"
+            role="combobox"
+            id={`select-${idRef.current}`}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-owns={`listbox-${idRef.current}`}
+            aria-labelledby={`label-${idRef.current}`}
+            onKeyDown={handleKeyDown}
+        >
             <div
                 onClick={handleLabelClick}
                 className="flex items-center gap-5 bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 rounded-lg shadow-md cursor-pointer select-none"
@@ -99,7 +187,12 @@ const Select = ({ options, value, label, onChange }) => {
             </div>
 
             {isOpen && (
-                <ul className="bg-white w-full dark:bg-shark-900 py-1.5 rounded-lg shadow-md absolute z-10 -bottom-2 translate-y-full">
+                <ul
+                    className="bg-white w-full dark:bg-shark-900 py-1.5 rounded-lg shadow-md absolute z-10 -bottom-2 translate-y-full outline-none"
+                    role="listbox"
+                    id={`listbox-${idRef.current}`}
+                    aria-live="polite"
+                >
                     {renderedOptions}
                 </ul>
             )}

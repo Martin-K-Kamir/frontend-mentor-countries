@@ -5,7 +5,7 @@ export const api = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "https://restcountries.com/v3.1",
         // fetchFn: async (...args) => {
-        //     await new Promise(resolve => setTimeout(resolve, 1500));
+        //     await new Promise(resolve => setTimeout(resolve, 11_500));
         //     return fetch(...args);
         // },
     }),

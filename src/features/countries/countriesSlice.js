@@ -1,7 +1,7 @@
 import { api } from "../api/api";
 import { createEntityAdapter } from "@reduxjs/toolkit";
-import { createSelector, weakMapMemoize } from 'reselect'
-
+import { createSelector, weakMapMemoize } from "reselect";
+import { apiLongRunningRequest } from "../api/apiHelpers.js";
 
 export const countriesAdapter = createEntityAdapter({
     selectId: country => country.name.common,
@@ -40,6 +40,9 @@ const extendedApi = api.injectEndpoints({
                 }));
 
                 return countriesAdapter.setAll(initialState, data);
+            },
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                await apiLongRunningRequest(queryFulfilled, dispatch);
             },
         }),
         getCountry: builder.query({
@@ -99,6 +102,9 @@ const extendedApi = api.injectEndpoints({
                     ],
                 };
             },
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                await apiLongRunningRequest(queryFulfilled, dispatch);
+            },
         }),
         getBorderCountries: builder.query({
             query: borders => `/alpha?codes=${borders}&fields=name`,
@@ -110,6 +116,9 @@ const extendedApi = api.injectEndpoints({
             query: name => `/name/${name}?fields=name`,
             transformResponse: response => {
                 return response.map(({ name }) => name.common);
+            },
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                await apiLongRunningRequest(queryFulfilled, dispatch);
             },
         }),
     }),
@@ -138,14 +147,19 @@ export const selectCountryIdsByRegion = createSelector(
     (countries, searchResults, region) => {
         // console.log({ countries, searchResults, region });
 
-        const data = searchResults ? searchResults.map(nameId => countries[nameId]) : Object.values(countries);
-        const filteredData = data.filter(country => country.region === region).map(country => country.name.common);
-        return searchResults ? filteredData : filteredData.sort((a, b) => a.localeCompare(b));
-
+        const data = searchResults
+            ? searchResults.map(nameId => countries[nameId])
+            : Object.values(countries);
+        const filteredData = data
+            .filter(country => country.region === region)
+            .map(country => country.name.common);
+        return searchResults
+            ? filteredData
+            : filteredData.sort((a, b) => a.localeCompare(b));
     },
     {
         memoize: weakMapMemoize,
-        argsMemoize: weakMapMemoize
+        argsMemoize: weakMapMemoize,
     }
 );
 
