@@ -32,7 +32,7 @@ const Select = ({ options, value, label, onChange, disabled }) => {
             ref.current.querySelectorAll(focusableElements)
         );
         const currentIndex = elements.indexOf(document.activeElement);
-        return {elements, currentIndex};
+        return { elements, currentIndex };
     };
 
     const toggleIsOpen = () => {
@@ -58,7 +58,7 @@ const Select = ({ options, value, label, onChange, disabled }) => {
 
     const handleArrowDownKey = e => {
         e.preventDefault();
-        const {elements, currentIndex} = getOptionElements();
+        const { elements, currentIndex } = getOptionElements();
 
         if (!isOpen) {
             setIsOpen(true);
@@ -69,7 +69,7 @@ const Select = ({ options, value, label, onChange, disabled }) => {
 
     const handleArrowUpKey = e => {
         e.preventDefault();
-        const {elements, currentIndex} = getOptionElements();
+        const { elements, currentIndex } = getOptionElements();
 
         if (currentIndex > 0) {
             elements[currentIndex - 1].focus();
@@ -80,16 +80,15 @@ const Select = ({ options, value, label, onChange, disabled }) => {
     };
 
     const handleTabKey = () => {
-        const {elements, currentIndex} = getOptionElements();
+        const { elements, currentIndex } = getOptionElements();
 
         if (currentIndex !== elements.length - 1) return;
 
         setIsOpen(false);
     };
 
-
     const handleKeyDown = e => {
-        if(disabled) return;
+        if (disabled) return;
 
         switch (e.key) {
             case "Enter":
@@ -127,7 +126,9 @@ const Select = ({ options, value, label, onChange, disabled }) => {
                 className="cursor-pointer hover:bg-gray-100 dark:hover:bg-shark-800 focus:bg-gray-100 focus:dark:bg-shark-800 py-1.5 px-5 sm:px-6 select-none outline-none"
                 tabIndex={0}
                 onClick={() => handleOptionClick({ value, label })}
-                onKeyDown={e => e.key === "Enter" && handleOptionClick({value, label})}
+                onKeyDown={e =>
+                    e.key === "Enter" && handleOptionClick({ value, label })
+                }
                 aria-disabled={value === "default"}
                 aria-hidden={value === "default"}
                 aria-setsize={arr.length}
@@ -159,7 +160,9 @@ const Select = ({ options, value, label, onChange, disabled }) => {
                 className="flex items-center gap-5 bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 rounded-lg shadow-md cursor-pointer select-none"
             >
                 <div>
-                    {value?.label ?? label ?? "Select an option"}
+                    <div id={`label-${idRef.current}`}>
+                        {value?.label ?? label ?? "Select an option"}
+                    </div>
                     {/* This div is used to pre-render all possible select options offscreen.
                     This ensures that the width of the select component is set to the width of the widest option,
                     preventing any width changes when different options are selected.*/}

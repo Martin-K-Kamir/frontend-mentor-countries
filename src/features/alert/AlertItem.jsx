@@ -77,11 +77,7 @@ const AlertItem = ({ alertId }) => {
     }
 
     return (
-        <div
-            className={itemClasses}
-            ref={ref}
-            style={{ maxHeight }}
-        >
+        <div className={itemClasses} ref={ref} style={{ maxHeight }}>
             <div className={contentClasses} ref={ref}>
                 <IconComponent
                     className="w-5 h-5 flex-shrink-0"

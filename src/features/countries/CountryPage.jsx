@@ -86,6 +86,8 @@ const CountryPage = () => {
                     <CountryFlag
                         className="rounded-lg max-h-96 w-full shadow-lg bg-white"
                         flags={flags}
+                        width="512"
+                        height="250"
                     />
                 </div>
                 <div className="max-w-lg w-full lg:max-w-2xl text-base">

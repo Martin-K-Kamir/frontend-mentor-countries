@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 
 const CountriesPage = () => {
     const navigate = useNavigate();
-    const {pageId} = useParams();
+    const { pageId } = useParams();
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
     const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
@@ -144,11 +144,11 @@ const CountriesPage = () => {
                         isSearchError
                     }
                     options={[
-                        {value: "africa", label: "Africa"},
-                        {value: "americas", label: "Americas"},
-                        {value: "asia", label: "Asia"},
-                        {value: "europe", label: "Europe"},
-                        {value: "oceania", label: "Oceania"},
+                        { value: "africa", label: "Africa" },
+                        { value: "americas", label: "Americas" },
+                        { value: "asia", label: "Asia" },
+                        { value: "europe", label: "Europe" },
+                        { value: "oceania", label: "Oceania" },
                     ]}
                 />
             </form>
@@ -162,7 +162,7 @@ const CountriesPage = () => {
                         itemsPerPage={itemsPerPage}
                     />
                 ) : (
-                    <ErrorMessage message="An error has occurred. Please try again later."/>
+                    <ErrorMessage message="An error has occurred. Please try again later." />
                 )}
             </div>
 
