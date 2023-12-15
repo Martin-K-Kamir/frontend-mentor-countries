@@ -19,7 +19,7 @@ const SearchCountry = ({
     const [isTabPressed, setIsTabPressed] = useState(false);
 
     const classes = classnames(
-        "text-base flex items-center relative sm:max-w-md w-full bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 gap-4 rounded-lg shadow cursor-text transition-opacity",
+        " flex items-center relative sm:max-w-md w-full bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 gap-4 rounded-lg shadow text-base cursor-text transition-opacity",
         {
             "opacity-50 pointer-events-none !outline-none": disabled,
             "outline outline-2": isFocused,

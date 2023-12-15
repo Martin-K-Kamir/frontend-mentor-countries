@@ -124,7 +124,10 @@ const CountriesPage = () => {
 
     return (
         <div className="wrapper mt-10 sm:mt-20 pb-28">
-            <form className="flex flex-col gap-5 sm:flex-row sm:justify-between">
+            <form
+                className="flex flex-col gap-5 sm:flex-row sm:justify-between"
+                onSubmit={e => e.preventDefault()}
+            >
                 <SearchCountry
                     searchTerm={searchTerm}
                     onSearch={handleSearch}

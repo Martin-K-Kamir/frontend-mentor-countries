@@ -11,7 +11,7 @@ const Select = ({ options, value, label, onChange, disabled }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const classes = classnames(
-        "relative inline-flex w-max flex-shrink-0 transition-opacity rounded-lg focus-visible:outline outline-inherit outline-2",
+        "relative inline-flex w-max flex-shrink-0 transition-opacity rounded-lg focus-visible:outline outline-inherit text-base outline-2",
         {
             "opacity-50 pointer-events-none !outline-none": disabled,
         }
