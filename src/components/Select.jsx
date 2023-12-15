@@ -157,7 +157,7 @@ const Select = ({ options, value, label, onChange, disabled }) => {
         >
             <div
                 onClick={handleLabelClick}
-                className="flex items-center gap-5 bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 rounded-lg shadow-md cursor-pointer select-none"
+                className="flex items-center gap-5 bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 rounded-lg shadow cursor-pointer select-none"
             >
                 <div>
                     <div id={`label-${idRef.current}`}>

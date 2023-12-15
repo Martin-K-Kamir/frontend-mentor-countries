@@ -31,7 +31,7 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
                     {itemsTotal} results
                 </p>
             )}
-            <div className="flex gap-3 ml-auto">
+            <div className="flex gap-3 lg:ml-auto">
                 <Button
                     bold
                     size="sm"
