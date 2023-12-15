@@ -5,10 +5,15 @@ import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
     const navigate = useNavigate();
+    const isPrevDisabled = +currentPage === 1 || itemsTotal === 0;
+    const isNextDisabled =
+        +currentPage === Math.ceil(itemsTotal / itemsPerPage) ||
+        itemsTotal === 0;
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [currentPage]);
+
     const handlePrevClick = () => {
         navigate(`/page/${+currentPage - 1}`);
     };
@@ -16,11 +21,6 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
     const handleNextClick = () => {
         navigate(`/page/${+currentPage + 1}`);
     };
-
-    const isPrevDisabled = +currentPage === 1 || itemsTotal === 0;
-    const isNextDisabled =
-        +currentPage === Math.ceil(itemsTotal / itemsPerPage) ||
-        itemsTotal === 0;
 
     return (
         <div className="flex items-center lg:items-start justify-between gap-4 flex-col-reverse lg:flex-row">

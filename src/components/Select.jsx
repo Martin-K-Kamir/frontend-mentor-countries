@@ -1,21 +1,19 @@
-import { createRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
 import classnames from "classnames";
 
 const Select = ({ options, value, label, onChange, disabled }) => {
     const ref = useRef();
-    const refs = useRef([]);
-    refs.current = options.map((_, i) => refs.current[i] ?? createRef());
     const idRef = useRef(nanoid());
 
     const [currentValue, setCurrentValue] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
 
     const classes = classnames(
-        "relative inline-flex w-max flex-shrink-0 transition-opacity rounded-lg focus:outline outline-inherit outline-2",
+        "relative inline-flex w-max flex-shrink-0 transition-opacity rounded-lg focus-visible:outline outline-inherit outline-2",
         {
-            "opacity-50 pointer-events-none": disabled,
+            "opacity-50 pointer-events-none !outline-none": disabled,
         }
     );
 
@@ -27,11 +25,22 @@ const Select = ({ options, value, label, onChange, disabled }) => {
         };
     }, []);
 
+    const getOptionElements = () => {
+        const focusableElements =
+            'li[role="option"]:not([aria-disabled="true"])';
+        const elements = Array.from(
+            ref.current.querySelectorAll(focusableElements)
+        );
+        const currentIndex = elements.indexOf(document.activeElement);
+        return {elements, currentIndex};
+    };
+
     const toggleIsOpen = () => {
         setIsOpen(prevIsOpen => !prevIsOpen);
     };
 
     const handleLabelClick = () => {
+        if (disabled) return;
         toggleIsOpen();
     };
 
@@ -48,50 +57,40 @@ const Select = ({ options, value, label, onChange, disabled }) => {
     };
 
     const handleArrowDownKey = e => {
-        if (e.target !== ref.current) return;
-
         e.preventDefault();
+        const {elements, currentIndex} = getOptionElements();
 
         if (!isOpen) {
             setIsOpen(true);
-        } else {
-            const index = options.findIndex(
-                option => option.value === currentValue?.value
-            );
-
-            if (index === options.length - 1) {
-                setCurrentValue(options[0]);
-                refs.current[0].current.focus();
-            } else {
-                setCurrentValue(options[index + 1]);
-                refs.current[index + 1].current.focus();
-            }
+        } else if (currentIndex < elements.length - 1) {
+            elements[currentIndex + 1].focus();
         }
     };
 
     const handleArrowUpKey = e => {
-        if (e.target !== ref.current) return;
-
         e.preventDefault();
+        const {elements, currentIndex} = getOptionElements();
 
-        if (!isOpen) {
-            setIsOpen(true);
-        } else {
-            const index = options.findIndex(
-                option => option.value === currentValue?.value
-            );
-
-            if (index === 0) {
-                setCurrentValue(options[options.length - 1]);
-                refs.current[options.length - 1].current.focus();
-            } else {
-                setCurrentValue(options[index - 1]);
-                refs.current[index - 1].current.focus();
-            }
+        if (currentIndex > 0) {
+            elements[currentIndex - 1].focus();
+        } else if (isOpen) {
+            setIsOpen(false);
+            ref.current.focus();
         }
     };
 
+    const handleTabKey = () => {
+        const {elements, currentIndex} = getOptionElements();
+
+        if (currentIndex !== elements.length - 1) return;
+
+        setIsOpen(false);
+    };
+
+
     const handleKeyDown = e => {
+        if(disabled) return;
+
         switch (e.key) {
             case "Enter":
                 handleEnterKey(e);
@@ -102,6 +101,8 @@ const Select = ({ options, value, label, onChange, disabled }) => {
             case "ArrowUp":
                 handleArrowUpKey(e);
                 break;
+            case "Tab":
+                handleTabKey(e);
             default:
                 break;
         }
@@ -122,11 +123,11 @@ const Select = ({ options, value, label, onChange, disabled }) => {
         return (
             <li
                 key={value}
-                ref={refs.current[i]}
                 role="option"
-                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-shark-800 focus:bg-gray-100 focus:hover:bg-shark-800 py-1.5 px-5 sm:px-6 select-none  "
+                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-shark-800 focus:bg-gray-100 focus:dark:bg-shark-800 py-1.5 px-5 sm:px-6 select-none outline-none"
                 tabIndex={0}
                 onClick={() => handleOptionClick({ value, label })}
+                onKeyDown={e => e.key === "Enter" && handleOptionClick({value, label})}
                 aria-disabled={value === "default"}
                 aria-hidden={value === "default"}
                 aria-setsize={arr.length}
@@ -144,7 +145,7 @@ const Select = ({ options, value, label, onChange, disabled }) => {
         <div
             ref={ref}
             className={classes}
-            tabIndex="0"
+            tabIndex={disabled ? undefined : 0}
             role="combobox"
             id={`select-${idRef.current}`}
             aria-expanded={isOpen}

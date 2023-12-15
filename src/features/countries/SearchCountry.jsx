@@ -21,8 +21,8 @@ const SearchCountry = ({
     const classes = classnames(
         "flex items-center relative sm:max-w-md w-full bg-white dark:bg-shark-900 py-3 px-5 sm:py-4 sm:px-6 gap-4 rounded-lg shadow-md cursor-text transition-opacity",
         {
-            "opacity-50 pointer-events-none": disabled,
-            outline: isFocused,
+            "opacity-50 pointer-events-none !outline-none": disabled,
+            "outline outline-2": isFocused,
         },
         rest.className
     );
@@ -100,6 +100,7 @@ const SearchCountry = ({
                 placeholder={placeholder ?? "Search for a country"}
                 className="bg-transparent w-full outline-none"
                 autoCorrect="false"
+                tabIndex={disabled ? -1 : 0}
             />
 
             {loading ? (
