@@ -145,14 +145,14 @@ export const selectCountryIdsByRegion = createSelector(
     (_, searchResults) => searchResults,
     (_, __, region) => region,
     (countries, searchResults, region) => {
-        // console.log({ countries, searchResults, region });
-
         const data = searchResults
             ? searchResults.map(nameId => countries[nameId])
             : Object.values(countries);
+
         const filteredData = data
             .filter(country => country.region === region)
             .map(country => country.name.common);
+
         return searchResults
             ? filteredData
             : filteredData.sort((a, b) => a.localeCompare(b));

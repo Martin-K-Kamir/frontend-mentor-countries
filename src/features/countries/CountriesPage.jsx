@@ -128,8 +128,7 @@ const CountriesPage = () => {
         if (countryIds.length === 0) return;
 
         const numPages = Math.ceil(countryIds.length / itemsPerPage);
-        const parsedPageId = parseInt(pageId, 10); // Parse pageId as an integer
-
+        const parsedPageId = parseInt(pageId, 10);
         const isInvalidPage =
             isNaN(parsedPageId) || parsedPageId < 1 || parsedPageId > numPages;
 
