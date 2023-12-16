@@ -99,7 +99,6 @@ const SearchCountry = ({
                 onChange={onSearch}
                 placeholder={placeholder ?? "Search for a country"}
                 className="bg-transparent w-full outline-none"
-                autoCorrect="false"
                 tabIndex={disabled ? -1 : 0}
             />
 

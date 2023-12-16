@@ -22,6 +22,6 @@ Welcome to the repository for this project. Feel free to look around and explore
 - My website - [martinkamir.com](https://martinkamir.com)
 - Frontend Mentor - [@Martin-K-Kamir](https://www.frontendmentor.io/profile/Martin-K-Kamir)
 - Frontend Mentor
-  Solution - [Solution link](https://www.frontendmentor.io/solutions/devfinder-app-js-scss-vite-pwa-zNcsGwcuwt)
+  Solution - [Solution link](https://www.frontendmentor.io/solutions/responsive-app-using-react-redux-toolkit-and-rtk-query-tailwindcss-qxsxvmPL1t)
 
 Happy coding! 😄

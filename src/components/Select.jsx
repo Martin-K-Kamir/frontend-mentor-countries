@@ -151,7 +151,6 @@ const Select = ({ options, value, label, onChange, disabled }) => {
             id={`select-${idRef.current}`}
             aria-expanded={isOpen}
             aria-haspopup="listbox"
-            aria-owns={`listbox-${idRef.current}`}
             aria-labelledby={`label-${idRef.current}`}
             onKeyDown={handleKeyDown}
         >
@@ -194,7 +193,6 @@ const Select = ({ options, value, label, onChange, disabled }) => {
                 <ul
                     className="bg-white w-full dark:bg-shark-900 py-1.5 rounded-lg shadow-md absolute z-10 -bottom-2 translate-y-full outline-none"
                     role="listbox"
-                    id={`listbox-${idRef.current}`}
                     aria-live="polite"
                 >
                     {renderedOptions}
