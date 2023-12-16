@@ -167,6 +167,10 @@ const CountriesPage = () => {
                 ) : (
                     <ErrorMessage message="An error has occurred. Please try again later." />
                 )}
+
+                {countryIds?.length === 0 &&
+                    !isCountriesQueryLoading &&
+                    searchTerm && <ErrorMessage message="No results found." />}
             </div>
 
             {isCountriesQuerySuccess && !isCountriesQueryError && (

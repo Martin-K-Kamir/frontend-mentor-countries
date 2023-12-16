@@ -14,12 +14,6 @@ const CountriesList = ({ data, currentPage, itemsPerPage, loading }) => {
         list = data;
     }
 
-    const isListEmpty = list?.length === 0;
-
-    if (isListEmpty && !loading) {
-        return <ErrorMessage message="No countries found." />;
-    }
-
     return (
         <ul className="grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10 lg:gap-14">
             {list.map(countryId => (
