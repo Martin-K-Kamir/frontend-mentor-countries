@@ -141,14 +141,9 @@ const CountryPage = () => {
             <div className="mt-10 sm:mt-20">
                 <Button
                     bold
-                    size={isAboveSm ? "md" : "sm"}
+                    size="sm"
                     to={backToPage()}
-                    startIcon={
-                        <GoArrowLeft
-                            className="translate-y-[1px]"
-                            strokeWidth="1px"
-                        />
-                    }
+                    startIcon={<GoArrowLeft strokeWidth="1px" />}
                 >
                     Go Back
                 </Button>

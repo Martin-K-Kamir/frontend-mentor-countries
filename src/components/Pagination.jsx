@@ -38,12 +38,7 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
                     size="sm"
                     onClick={handlePrevClick}
                     disabled={isPrevDisabled}
-                    startIcon={
-                        <GoArrowLeft
-                            className="translate-y-[1px]"
-                            strokeWidth="1px"
-                        />
-                    }
+                    startIcon={<GoArrowLeft strokeWidth="1px" />}
                 >
                     Previous
                 </Button>
@@ -52,12 +47,7 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
                     size="sm"
                     onClick={handleNextClick}
                     disabled={isNextDisabled}
-                    endIcon={
-                        <GoArrowRight
-                            className="translate-y-[1px]"
-                            strokeWidth="1px"
-                        />
-                    }
+                    endIcon={<GoArrowRight strokeWidth="1px" />}
                 >
                     Next
                 </Button>
