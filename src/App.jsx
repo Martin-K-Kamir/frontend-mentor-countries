@@ -19,6 +19,10 @@ function App() {
                         element={<CountriesPage />}
                     />
                     <Route
+                        path="/page/:regionId/:pageId"
+                        element={<CountriesPage />}
+                    />
+                    <Route
                         path="/country/:countryId"
                         element={<CountryPage />}
                     />

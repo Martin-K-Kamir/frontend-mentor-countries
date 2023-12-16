@@ -17,14 +17,25 @@ import ErrorMessage from "../../components/ErrorMessage.jsx";
 import Select from "../../components/Select.jsx";
 import { useSelector } from "react-redux";
 
+const regions = [
+    { value: "africa", label: "Africa" },
+    { value: "americas", label: "Americas" },
+    { value: "asia", label: "Asia" },
+    { value: "europe", label: "Europe" },
+    { value: "oceania", label: "Oceania" },
+];
+
 const CountriesPage = () => {
     const navigate = useNavigate();
-    const { pageId } = useParams();
+    const { pageId, regionId } = useParams();
     const isBelowLg = useMediaQuery(BELOW_LG);
     const isAboveSm = useMediaQuery(ABOVE_SM);
     const itemsPerPage = isBelowLg && isAboveSm ? 9 : 8;
 
-    const [selectedRegion, setSelectedRegion] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState(() => {
+        const region = regions.find(region => region.value === regionId);
+        return region ?? null;
+    });
     const [countryIds, setCountryIds] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -83,7 +94,10 @@ const CountriesPage = () => {
 
         if (selectedRegion && !isSearchingCountries) {
             setCountryIds(filteredCountryIds);
-            navigate("/page/1");
+
+            if (debouncedSearchTerm) {
+                navigate(`/page/${selectedRegion.value}/1`);
+            }
         }
     }, [
         selectedRegion,
@@ -110,6 +124,21 @@ const CountriesPage = () => {
         );
     }, [isSearchError]);
 
+    useEffect(() => {
+        if (countryIds.length === 0) return;
+
+        const numPages = Math.ceil(countryIds.length / itemsPerPage);
+        const parsedPageId = parseInt(pageId, 10); // Parse pageId as an integer
+
+        const isInvalidPage =
+            isNaN(parsedPageId) || parsedPageId < 1 || parsedPageId > numPages;
+
+        if (isInvalidPage) {
+            const newPath = regionId ? `/page/${regionId}/1` : `/page/1`;
+            navigate(newPath);
+        }
+    }, [countryIds, itemsPerPage, pageId, regionId]);
+
     const handleSearch = e => {
         setSearchTerm(e.target.value);
     };
@@ -120,6 +149,12 @@ const CountriesPage = () => {
 
     const handleSelectChange = option => {
         setSelectedRegion(option);
+
+        if (option) {
+            navigate(`/page/${option.value}/1`);
+        } else {
+            navigate(`/page/1`);
+        }
     };
 
     return (
@@ -146,13 +181,7 @@ const CountriesPage = () => {
                         isSearchingCountries ||
                         isSearchError
                     }
-                    options={[
-                        { value: "africa", label: "Africa" },
-                        { value: "americas", label: "Americas" },
-                        { value: "asia", label: "Asia" },
-                        { value: "europe", label: "Europe" },
-                        { value: "oceania", label: "Oceania" },
-                    ]}
+                    options={regions}
                 />
             </form>
 

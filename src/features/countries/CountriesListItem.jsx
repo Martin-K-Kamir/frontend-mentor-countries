@@ -8,7 +8,7 @@ import CountryFlag from "./CountryFlag.jsx";
 import classnames from "classnames";
 
 let CountriesListItem = ({ countryId, loading }) => {
-    const { pageId } = useParams();
+    const { pageId, regionId } = useParams();
     const { name, flags, info } =
         useSelector(state => selectCountryById(state, countryId)) || {};
 
@@ -38,7 +38,7 @@ let CountriesListItem = ({ countryId, loading }) => {
         <li className={classes}>
             <Link
                 to={`/country/${toCamelCase(name?.official)}`}
-                state={{ from: pageId }}
+                state={{ from: { pageId, regionId } }}
                 className="outline-none"
             >
                 <CountryFlag

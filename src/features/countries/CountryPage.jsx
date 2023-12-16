@@ -19,6 +19,20 @@ const CountryPage = () => {
     const from = location.state?.from ?? "1";
     const { countryId } = useParams();
 
+    const backToPage = () => {
+        if (location.state?.from) {
+            const { pageId, regionId } = location.state.from;
+
+            if (pageId && regionId) {
+                return `/page/${regionId}/${pageId}`;
+            } else if (pageId) {
+                return `/page/${pageId}`;
+            }
+        }
+
+        return "/page/1";
+    };
+
     const {
         data: country,
         isFetching,
@@ -128,7 +142,7 @@ const CountryPage = () => {
                 <Button
                     bold
                     size={isAboveSm ? "md" : "sm"}
-                    to={`/page/${from}`}
+                    to={backToPage()}
                     startIcon={
                         <GoArrowLeft
                             className="translate-y-[1px]"

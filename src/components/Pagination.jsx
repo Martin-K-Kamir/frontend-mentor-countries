@@ -1,9 +1,10 @@
 import Button from "./Button.jsx";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
+    const { pathname } = useLocation();
     const navigate = useNavigate();
     const isPrevDisabled = +currentPage === 1 || itemsTotal === 0;
     const isNextDisabled =
@@ -15,11 +16,11 @@ const Pagination = ({ currentPage, itemsTotal, itemsPerPage }) => {
     }, [currentPage]);
 
     const handlePrevClick = () => {
-        navigate(`/page/${+currentPage - 1}`);
+        navigate(pathname.replace(currentPage, +currentPage - 1));
     };
 
     const handleNextClick = () => {
-        navigate(`/page/${+currentPage + 1}`);
+        navigate(pathname.replace(currentPage, +currentPage + 1));
     };
 
     return (
