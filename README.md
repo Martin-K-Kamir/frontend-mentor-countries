@@ -1,8 +1,27 @@
-# React + Vite
+# Frontend Mentor - REST Countries API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![preview of the site](/preview.jpg)
 
-Currently, two official plugins are available:
+This is a challenge from [Frontend Mentor](https://www.frontendmentor.io/). Coded
+by [me](https://www.frontendmentor.io/profile/Martin-K-Kamir)! 😁
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Welcome to the repository for this project. Feel free to look around and explore! 😀
+
+### Tools
+
+- [Vite](https://vitejs.dev/)
+- [Tailwindcss](https://tailwindcss.com/)
+- [React](https://react.dev/)
+- [React Router](https://reactrouter.com/)
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [Redux Toolkit & RTK Query](https://redux-toolkit.js.org/)
+
+### Links
+
+- Live Site URL - [countries-martinkamir.netlify.app](https://countries-martinkamir.netlify.app)
+- My website - [martinkamir.com](https://martinkamir.com)
+- Frontend Mentor - [@Martin-K-Kamir](https://www.frontendmentor.io/profile/Martin-K-Kamir)
+- Frontend Mentor
+  Solution - [Solution link](https://www.frontendmentor.io/solutions/devfinder-app-js-scss-vite-pwa-zNcsGwcuwt)
+
+Happy coding! 😄
