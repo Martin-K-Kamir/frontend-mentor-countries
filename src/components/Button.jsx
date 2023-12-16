@@ -18,9 +18,9 @@ const Button = ({
     const Component = to ? Link : href ? "a" : "button";
 
     const classes = classnames(
-        "inline-flex items-center justify-center leading-none gap-1.5  focus-visible:outline-1 disabled:opacity-50 disabled:cursor-not-allowed select-none whitespace-nowrap",
+        "inline-flex items-center leading-none justify-center gap-1.5 focus-visible:outline-1 disabled:opacity-50 disabled:cursor-not-allowed select-none whitespace-nowrap",
         {
-            "rounded-lg pt-2 pb-2.5 px-4": !isIconButton,
+            "rounded-lg p-2.5 px-4": !isIconButton,
             "rounded-full p-1": isIconButton,
             "font-medium": bold,
             "text-sm": size === "sm",
