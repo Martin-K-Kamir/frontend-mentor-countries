@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { api } from "../features/api/api";
-import alertReducer, { addAlert } from "../features/alert/alertSlice";
+import alertReducer from "../features/alert/alertSlice";
 
 export const store = configureStore({
     reducer: {
@@ -10,11 +10,3 @@ export const store = configureStore({
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware().concat(api.middleware),
 });
-
-// store.dispatch(
-//     addAlert({
-//         message: "Success!",
-//         timeout: 5000000,
-//         variant: "success",
-//     })
-// );
