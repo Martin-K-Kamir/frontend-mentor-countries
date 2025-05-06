@@ -1,4 +1,4 @@
-# Frontend Mentor - REST Countries API
+# Frontend Mentor - REST Countries
 
 ![preview of the site](/preview.jpg)
 
